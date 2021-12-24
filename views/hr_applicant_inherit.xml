@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="thc_inherit_hr_applicant_form" model="ir.ui.view">
+		<field name="name">thc.inherit.hr.applicant.form</field>
+		<field name="model">hr.applicant</field>
+		<field name="priority">30</field>
+		<field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//form/header" position="replace">
+				<header>
+					<button string="Phỏng vấn vòng 1" name="pv_vong1" type="object" class="btn btn-info btn-sm" attrs="{'invisible': ['|',('active', '=', False),('stage_id', '!=', 1)]}"/>
+					<button string="Phỏng vấn vòng 2" name="pv_vong2" type="object" class="btn btn-info btn-sm" attrs="{'invisible': ['|',('active', '=', False),('stage_id', '!=', 2)]}"/>
+					<button string="Tạo nhân viên" name="create_employee" type="object" class="btn btn-success btn-sm"  attrs="{'invisible': ['|','|',('emp_id', '!=', False),('active', '=', False),('stage_id', '!=', 4)]}"/>
+					<button string="Đã ký Hợp đồng" name="daky_hd" type="object" class="btn btn-info btn-sm" attrs="{'invisible': ['|','|',('active', '=', False),('stage_id', '!=', 4),('emp_id', '=', False)]}"/>
+					<button string="Từ chối" name="archive_applicant" type="object" class="btn btn-danger btn-sm" attrs="{'invisible': [('active', '=', False)]}"/>
+					<button string="Khôi phục" name="toggle_active" type="object" class="btn btn-warning btn-sm" attrs="{'invisible': [('active', '=', True)]}"/>
+					<field name="stage_id" widget="statusbar" options="{'clickable': ''}" attrs="{'invisible': [('active', '=', False),('emp_id', '=', False)]}"/>
+				</header>
+			</xpath>
+			<xpath expr="//form/sheet" position="replace">
+				<sheet>
+					<div class="oe_button_box" name="button_box">						
+						<button name="action_applications_email" class="oe_stat_button" icon="fa-pencil" type="object" context="{'active_test': False}" attrs="{'invisible': [('application_count', '=', 0)]}">
+							<field name="application_count" widget="statinfo" string="Other Applications"/>
+						</button>
+						<button name="action_makeMeeting" class="oe_stat_button" icon="fa-calendar" type="object" help="Schedule interview with this applicant">
+							<field name="meeting_count" widget="statinfo" string="Meetings"/>
+						</button>
+					</div>
+					<widget name="web_ribbon" title="Từ chối" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+					<!--<field name="kanban_state" widget="kanban_state_selection"/>-->
+					<field name="active" invisible="1"/>					
+					<div class="oe_title">
+						<label for="name" string="Tên ứng viên"/>
+						<h2>
+							<field name="name"/>
+						</h2>
+						<div>
+							<field name="dataodanhgia" invisible="1"/>
+							<field name="dadanhgia" invisible="1"/>
+							<field name="dataonhanvien" invisible="1"/>
+							<field name="dataohopdong" invisible="1"/>
+							<t attrs="{'invisible' : [('dataodanhgia', '=', False)]}">
+								<span  class="badge badge-pill badge-info">Đã tạo đánh giá</span>
+							</t>							
+							<t attrs="{'invisible' : [('dadanhgia', '=', False)]}">
+								<span class="badge badge-pill badge-success">Đã đánh giá</span>
+							</t>
+							<t attrs="{'invisible' : [('dataonhanvien', '=', False)]}">
+								<span class="badge badge-pill badge-warning">Đã tạo Nhân viên</span>
+							</t>
+							<t attrs="{'invisible' : [('dataohopdong', '=', False)]}">
+								<span  class="badge badge-pill badge-warning">Đã tạo Hợp đồng</span>
+							</t>							
+						</div>
+					</div>
+					<notebook>
+						<page string="Thông tin Tuyển dụng">
+							<group>
+								<group>
+									<field name="department_id" string="Phòng/ Ban" required="1" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="job_id" string="Vị trí tuyển dụng" required="1" domain="[('department_id','=',department_id)]" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>									
+									<field name="company_id" string="Công ty" groups="base.group_multi_company" options="{&quot;no_open&quot;:True}"/>
+									<field name="nguoi_pv_id" required="1" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="manager_id" required="1" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+								</group>
+								<group>
+									<field name="categ_ids" string="Thẻ" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+									<field name="nguoituyendung_id" domain="[('share', '=', False)]" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="user_id" string="Người xử lý" domain="[('share', '=', False)]" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="priority" string="Đánh giá" widget="priority"/>
+									<field name="ngay_thumoi" attrs="{'invisible': [('stage_id', '!=', %(hr_recruitment.stage_job4)d),('stage_id', '!=', %(hr_recruitment.stage_job5)d)]}"/>									
+								</group>								
+							</group>							
+						</page>
+						<page string="Thông tin Ứng viên">
+							<group string="Thông tin sơ bộ">
+								<group>
+									<field name="email_from" widget="email"/>
+									<field name="partner_mobile" string="Điện thoại" widget="phone"/>
+									<field name="source_id" string="Nguồn ứng viên"/>									
+								</group>
+								<group>
+									<field name="salary_expected" string="Mức lương mong đợi"/>
+									<field name="salary_proposed" string="Mức lương đề xuất"/>
+									<field name="availability" string="Thời gian sẵn sàng"/>
+									<field name="emp_id" invisible="1"/>
+								</group>
+							</group>
+							<group string="Thông tin cá nhân">
+								<group>
+									<field name="birthday" string="Ngày sinh"/>
+									<field name="laynamsinh"/>
+									<field name="gender" string="Giới tính"/>
+									<field name="country_id" string="Quốc tịch" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="tongiao_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="dantoc_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+								</group>
+								<group>
+									<field name="address_id" domain="[('diadiem_lamviec', '=', True)]"/>
+									<field name="honnhan"/>
+									<field name="trinhdovh_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="truonghoc_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="chuyennganh_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+								</group>
+							</group>
+							<group attrs="{'invisible': [('stage_id', '!=', %(hr_recruitment.stage_job4)d),('stage_id', '!=', %(hr_recruitment.stage_job5)d)]}">
+								<group string="Thông tin định danh">
+									<field name="identification_id" string="CMND/ CCCD"/>
+									<field name="ngaycapcccd"/>
+									<field name="noicapcccd_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="passport_id" string="Hộ chiếu"/>
+								</group>
+								<group string="Ngân hàng">
+									<field name="sotk"/>
+									<field name="tentk"/>
+									<field name="nganhang_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+								</group>
+							</group>
+							<group attrs="{'invisible': [('stage_id', '!=', %(hr_recruitment.stage_job4)d),('stage_id', '!=', %(hr_recruitment.stage_job5)d)]}">
+								<group string="Bảo hiểm">
+									<field name="sosobhxh"/>
+									<field name="ngaycap_bhxh"/>
+								</group>
+								<group string="Thuế">
+									<field name="mst"/>
+									<field name="ngaycap_mst"/>
+								</group>
+							</group>
+							<group attrs="{'invisible': [('stage_id', '!=', %(hr_recruitment.stage_job4)d),('stage_id', '!=', %(hr_recruitment.stage_job5)d)]}">
+								<group string="Nơi sinh">
+									<field name="ns_country_id" string="Quốc gia" class="oe_edit_only"/>
+									<field name="ns_state_id" string="Tỉnh/ TP" class="oe_edit_only"/>
+									<field name="ns_quanhuyen_id" string="Quận/ Huyện" class="oe_edit_only"/>
+									<field name="ns_phuongxa_id" string="Phường/ Xã" class="oe_edit_only"/>
+									<field name="ns_diachi" string="Địa chỉ" class="oe_edit_only"/>
+									<field name="noisinh"/>
+								</group>
+								<group string="Quê quán">
+									<field name="qq_country_id" string="Quốc gia" class="oe_edit_only"/>
+									<field name="qq_state_id" string="Tỉnh/ TP" class="oe_edit_only"/>
+									<field name="qq_quanhuyen_id" string="Quận/ Huyện" class="oe_edit_only"/>
+									<field name="qq_phuongxa_id" string="Phường/ Xã" class="oe_edit_only"/>
+									<field name="qq_diachi" string="Địa chỉ" class="oe_edit_only"/>
+									<field name="quequan"/>
+								</group>
+							</group>
+							<group attrs="{'invisible': [('stage_id', '!=', %(hr_recruitment.stage_job4)d),('stage_id', '!=', %(hr_recruitment.stage_job5)d)]}">
+								<group string="Hộ khẩu thường trú">
+									<field name="tt_country_id" string="Quốc gia" class="oe_edit_only"/>
+									<field name="tt_state_id" string="Tỉnh/ TP" class="oe_edit_only"/>
+									<field name="tt_quanhuyen_id" string="Quận/ Huyện" class="oe_edit_only"/>
+									<field name="tt_phuongxa_id" string="Phường/ Xã" class="oe_edit_only"/>
+									<field name="tt_diachi" string="Địa chỉ" class="oe_edit_only"/>
+									<field name="hkthuongtru"/>
+									<field name="la_choohiennay" class="oe_edit_only"/>
+								</group>
+								<group string="Chỗ ở hiện nay">
+									<field name="co_country_id" string="Quốc gia" class="oe_edit_only" attrs="{'readonly' : [('la_choohiennay', '=', True)]}"/>
+									<field name="co_state_id" string="Tỉnh/ TP" class="oe_edit_only" attrs="{'readonly' : [('la_choohiennay', '=', True)]}"/>
+									<field name="co_quanhuyen_id" string="Quận/ Huyện" class="oe_edit_only" attrs="{'readonly' : [('la_choohiennay', '=', True)]}"/>
+									<field name="co_phuongxa_id" string="Phường/ Xã" class="oe_edit_only" attrs="{'readonly' : [('la_choohiennay', '=', True)]}"/>
+									<field name="co_diachi" string="Địa chỉ" class="oe_edit_only" attrs="{'readonly' : [('la_choohiennay', '=', True)]}"/>
+									<field name="choohiennay" attrs="{'readonly' : [('la_choohiennay', '=', True)]}"/>
+								</group>
+							</group>
+						</page>
+						<page name="thongtin_giadinh" string="Thông tin gia đình" groups="hr.group_hr_user" attrs="{'invisible': [('stage_id', '!=', %(hr_recruitment.stage_job4)d),('stage_id', '!=', %(hr_recruitment.stage_job5)d)]}">
+							<field name="giadinh_ids">
+								<tree string="Thông tin gia đình" editable="bottom" sample="1">
+									<field name="name"/>
+									<field name="quanhe_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="namsinh"/>
+									<field name="nghenghiep"/>
+									<field name="co_country_id" class="oe_edit_only"/>
+									<field name="co_state_id" class="oe_edit_only"/>
+									<field name="co_quanhuyen_id" class="oe_edit_only"/>
+									<field name="co_phuongxa_id" class="oe_edit_only"/>
+									<field name="co_diachi" class="oe_edit_only"/>
+									<field name="choohiennay"/>
+									<field name="dienthoai"/>
+									<field name="chuho"/>
+									<field name="phuthuoc"/>
+									<field name="lh_khancap"/>
+								</tree>
+							</field>
+						</page>
+						<page name="lamviec_va_daotao" string="Làm việc, Đào tạo">
+							<div class="row">
+								<div class="o_hr_skills_group o_group_resume col-lg-7 d-flex">
+									<!-- This field uses a custom tree view rendered by the 'hr_resume' widget.
+                                Adding fields in the tree arch below makes them accessible to the widget
+                            -->
+									<field mode="tree" nolabel="1" name="resume_line_ids" widget="hr_resume">
+										<tree>
+											<field name="line_type_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+											<field name="name"/>
+											<field name="description"/>
+											<field name="date_start"/>
+											<field name="date_end"/>
+											<field name="display_type" invisible="1"/>
+										</tree>
+									</field>
+								</div>								
+							</div>
+						</page>						
+						<page string="Kết quả đánh giá" attrs="{'invisible' : [('dadanhgia', '=', False)]}">
+							<group>								
+								<group string="Kết luận/ Đề xuất">								
+									<field name="pbdg_ketqua" readonly="1"/>
+									<field name="pbdg_ketqua_kdat" readonly="1" attrs="{'invisible' : ['|',('pbdg_ketqua', '=', 'dat'),('pbdg_ketqua', '=', False)], 'required' : [('pbdg_ketqua', '=', 'khongdat')]}"/>
+								</group>
+								<group string="Thử việc" attrs="{'invisible': [('pbdg_ketqua', '=', 'khongdat')]}">									
+									<field name="tgthuviec_id" readonly="1" attrs="{'required' : [('pbdg_ketqua', '=', 'dat')]}"/>								
+									<label for="thuviec_tu"/>
+									<div class="o_row">
+										<field name="thuviec_tu" readonly="1" attrs="{'required' : [('pbdg_ketqua', '=', 'dat')]}"/>
+										<span> đến </span>
+										<field name="thuviec_den" readonly="1"/>
+									</div>
+								</group>
+							</group>
+							<group attrs="{'invisible': [('pbdg_ketqua', '=', 'khongdat')]}">
+								<group string="Lương">
+									<field name="luong_chinh" readonly="1" attrs="{'required' : [('pbdg_ketqua', '=', 'dat')]}"/>
+									<label for="pt_thuviec"/>
+									<div class="o_row">
+										<field name="pt_thuviec" readonly="1" attrs="{'required' : [('pbdg_ketqua', '=', 'dat')]}"/>
+										<span> %</span>
+									</div>									
+									<field name="luong_thuviec" readonly="1"/>
+								</group>																
+								<group string="Phụ cấp" name="phucap">
+									<div class="o_row">
+										<field name="phucap_ids" readonly="1">
+											<tree string="Phụ cấp" editable="bottom" sample="1">
+												<field name="loaiphucap_id"/>
+												<field name="ma"/>
+												<field name="name"/>
+												<field name="phucap"/>
+											</tree>
+										</field>
+									</div>
+								</group>								
+							</group>
+						</page>
+					</notebook>				
+					<field name="description" placeholder="Feedback of interviews..." invisible="1"/>
+				</sheet>
+			</xpath>
+		</field>
+	</record>
+
+	<record id="thc_inherit_hr_applicant_kanban" model="ir.ui.view">
+		<field name="name">thc.inherit.hr.applicant.kanban</field>
+		<field name="model">hr.applicant</field>
+		<field name="priority">30</field>
+		<field name="inherit_id" ref="hr_recruitment.hr_kanban_view_applicant"/>
+		<field name="arch" type="xml">
+			<div class="o_kanban_record_top" position="replace">
+				<div class="o_kanban_record_top">
+					<div class="o_kanban_record_headings">
+						<b class="text-uppercase" t-if="record.partner_name.raw_value">
+							<field name="partner_name"/>
+							<br/>
+						</b>
+						<t t-else="1">
+							<b>
+							<i class="text-uppercase">
+								<field name="name"/>
+							</i>
+							</b>
+							<br/>
+						</t>						
+						<field name="job_id" invisible="1"/>
+						<field name="department_id" invisible="1"/>
+						<field name="company_id" invisible="1"/>
+						<small class="o_kanban_record_subtitle text-muted">
+							ID: <span class="badge badge-pill badge-success"><field name="id"/></span><br/>
+							<t t-if="record.job_id.raw_value"><span>Vị trí: <span class="badge badge-pill badge-success"><field name="job_id"/></span><br/></span></t>
+							<t t-if="record.department_id.raw_value"><span>Phòng/ Ban: <field name="department_name"/><br/></span></t>
+							<t t-if="record.company_id.raw_value"><span>Công ty: <span class="badge badge-pill badge-success"><field name="company_id"/></span><br/></span></t>
+							<div>
+								<field name="dataodanhgia" invisible="1"/>
+								<field name="dadanhgia" invisible="1"/>
+								<field name="dataonhanvien" invisible="1"/>
+								<field name="dataohopdong" invisible="1"/>
+								<t attrs="{'invisible' : [('dataodanhgia', '=', False)]}">
+									<span class="badge badge-pill badge-info">Đã tạo đánh giá</span>
+								</t>
+								<t attrs="{'invisible' : [('dadanhgia', '=', False)]}">
+									<span class="badge badge-pill badge-success">Đã đánh giá</span>
+								</t>
+								<t attrs="{'invisible' : [('dataonhanvien', '=', False)]}">
+									<span class="badge badge-pill badge-warning">Đã tạo Nhân viên</span>
+								</t>
+								<t attrs="{'invisible' : [('dataohopdong', '=', False)]}">
+									<span class="badge badge-pill badge-warning">Đã tạo Hợp đồng</span>
+								</t>
+							</div>
+						</small>						
+					</div>
+				</div>
+			</div>
+		</field>
+	</record>
+	<record model="ir.actions.act_window" id="hr_applicant_employee_act">
+		<field name="name">Ứng viên</field>
+		<field name="res_model">hr.applicant</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('emp_id', '=', active_id)]</field>
+		<!--<field name="view_id" eval="hr_dgthuviec_tree"/>-->
+	</record>
+
+	<record id="hr_applicant_hr_employee_form" model="ir.ui.view">
+		<field name="name">hr.applicant.hr.employee.form</field>
+		<field name="model">hr.employee</field>
+		<field name="priority">31</field>
+		<field name="inherit_id" ref="hr.view_employee_form"/>
+		<field name="arch" type="xml">
+			<div name="button_box" position="inside">
+				<button name="%(hr_ta.hr_applicant_employee_act)d" type="action" class="oe_stat_button" icon="fa-list-alt">
+					<field string="Ứng viên" name="applicant_count" widget="statinfo"/>
+				</button>				
+			</div>
+		</field>
+	</record>
+</odoo>

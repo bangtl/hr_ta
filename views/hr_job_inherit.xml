@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!--Kanban view-->
+	<record id="thc_inherit_hr_job_kanban" model="ir.ui.view">
+		<field name="name">thc.inherit.hr.job.kanban</field>
+		<field name="model">hr.job</field>
+		<field name="priority">30</field>
+		<field name="inherit_id" ref="hr_recruitment.view_hr_job_kanban"/>
+		<field name="arch" type="xml">			
+			<div class="container o_kanban_card_content" position="replace">
+				<t t-if="record.state.raw_value == 'recruit' or record.no_of_recruitment.raw_value > 0">
+					<div class="row">
+						<t t-if="record.state.raw_value == 'recruit'">
+							<div class="col-6">
+								<button class="btn btn-primary" name="250" type="action">
+									<field name="application_count"/> Ứng viên
+								</button>
+							</div>
+						</t>						
+						<div class="col-6">
+							<field name="new_application_count"/> Ứng viên mới <br/>
+							<t t-if="record.no_of_recruitment.raw_value > 0">
+								<field name="no_of_recruitment"/> Tuyển dụng
+							</t>
+						</div>
+					</div>
+				</t>
+				<t t-if="record.ngaycan_nhansu.raw_value or record.user_id.raw_value">
+					<div class="row">						
+						<div class="col-12">
+							<t t-if="record.ngaycan_nhansu.raw_value">
+								Ngày cần nhân sự: <field name="ngaycan_nhansu"/>
+							</t>
+						</div>
+						<div class="col-12">
+							<t t-if="record.user_id.raw_value">
+								Người tuyển dụng: <field name="user_id"/>
+							</t>
+						</div>
+					</div>
+				</t>
+				<t t-if="record.state.raw_value == 'open'">
+					<div class="row">
+						<div class="col-12 o_kanban_primary_left">
+							<button class="btn btn-success" name="set_recruit" type="object">Bắt đầu tuyển dụng</button>
+						</div>
+					</div>
+				</t>
+				<div name="kanban_boxes" class="row o_recruitment_kanban_boxes">
+					<div class="o_recruitment_kanban_box o_kanban_primary_bottom bottom_block" style="padding-left:8px;">
+						<div class="col-6"/>
+						<div class="col-6 o_link_trackers">
+							<a role="button" name="251" type="action" invisible="1" class="btn btn-sm ">
+								<span title="Link Trackers">
+									<i class="fa fa-lg fa-envelope" role="img" aria-label="Link Trackers"/>
+								</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</field>
+	</record>
+	
+</odoo>

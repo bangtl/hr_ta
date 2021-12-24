@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!--Form View -->
+	<record model="ir.ui.view" id="hr_tao_dgthuviec_form">
+		<field name="name">hr.tao.dgthuviec.form</field>
+		<field name="model">hr.tao.dgthuviec</field>
+		<field name="arch" type="xml">
+			<form string="Tạo đánh giá thử việc">
+				<group>
+					<group string="Người đánh giá tại cấp Nhân sự tự đánh giá">
+						<field name="nhansu_tu_danhgia"/>						
+					</group>
+					<group>						
+					</group>
+				</group>								
+				<footer>
+					<button name="hoanthanh" string="Hoàn thành" type="object" class="btn-primary"/>
+					<button string="Hủy" class="btn-secondary" special="cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+	<record id="hr_tao_dgthuviec_act" model="ir.actions.act_window">
+		<field name="name">Tạo đánh giá thử việc</field>
+		<field name="res_model">hr.tao.dgthuviec</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="hr_tao_dgthuviec_form"/>
+		<field name="target">new</field>
+	</record>
+	<record id="wizard_dgthuviec_hr_employee_form" model="ir.ui.view">
+		<field name="name">wizard.dgthuviec.hr.employee.form</field>
+		<field name="model">hr.employee</field>
+		<field name="priority">31</field>
+		<field name="inherit_id" ref="hr.view_employee_form"/>
+		<field name="arch" type="xml">
+			<button name="tao_khthuviec" position="after">
+				<button name="%(hr_ta.hr_tao_dgthuviec_act)d" string="Tạo đánh giá thử việc" type="action" 
+						class="btn btn-info btn-sm"
+						groups="hr_recruitment.group_hr_recruitment_user"/>				
+			</button>
+		</field>
+	</record>
+</odoo>

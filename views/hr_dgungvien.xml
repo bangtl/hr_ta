@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Stage Tree View -->
+    <record model="ir.ui.view" id="hr_dgungvien_stage_tree">
+        <field name="name">hr.dgungvien.stage.tree</field>
+        <field name="model">hr.dgungvien.stage</field>
+        <field name="arch" type="xml">
+            <tree string="Stages" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+	<!-- Phê duyệt cuối Tree View -->
+	<record model="ir.ui.view" id="hr_dgungvien_pheduyetcuoi_tree">
+		<field name="name">hr.dgungvien.pheduyetcuoi.tree</field>
+		<field name="model">hr.dgungvien.pheduyetcuoi</field>
+		<field name="arch" type="xml">
+			<tree string="Stages" editable="bottom" sample="1">
+				<field name="sequence" widget="handle"/>
+				<field name="name"/>
+				<field name="company_id"/>
+				<field name="user_id"/>
+				<field name="active"/>
+				<field name="default"/>
+			</tree>
+		</field>
+	</record>
+
+    <!-- Đánh giá ứng viên tree-->
+    <record model="ir.ui.view" id="hr_dgungvien_tree">
+        <field name="name">hr.dgungvien.tree</field>
+        <field name="model">hr.dgungvien</field>
+        <field name="arch" type="xml">
+            <tree string="Đánh giá ứng viên" sample="1" decoration-warning="stage_id==%(hr_ta.dgungvien_stage_1)d" decoration-info="stage_id==%(hr_ta.dgungvien_stage_2)d" decoration-success="stage_id==%(hr_ta.dgungvien_stage_3)d" decoration-danger="stage_id==%(hr_ta.dgungvien_stage_4)d">
+                <field name="applicant_id"/>
+				<field name="job_id"/>
+				<field name="department_id" optional="hide"/>
+				<field name="department_name"/>
+				<field name="company_id"/>
+				<field name="user_id" readonly="1"/>
+				<field name="stage_id" decoration-warning="stage_id==%(hr_ta.dgungvien_stage_1)d" decoration-info="stage_id==%(hr_ta.dgungvien_stage_2)d" decoration-success="stage_id==%(hr_ta.dgungvien_stage_3)d" decoration-danger="stage_id==%(hr_ta.dgungvien_stage_4)d" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+	<!--Đánh giá ứng viên form-->
+    <record model="ir.ui.view" id="hr_dgungvien_form">
+        <field name="name">hr.dgungvien.form</field>
+        <field name="model">hr.dgungvien</field>
+        <field name="arch" type="xml">
+            <form string="Đánh giá ứng viên">
+				<field name="active" invisible="1"/>
+				<field name="is_self" invisible="1"/>
+                <header>
+					<button string="Đánh giá xong" name="nsdg" type="object" class="btn btn-success btn-sm" attrs="{'invisible': ['|','|',('active', '=', False),('nsdg_xong', '=', True),('is_self','!=',True)]}"/>
+					<button string="Đánh giá xong" name="pbdg" type="object" class="btn btn-success btn-sm" attrs="{'invisible': ['|','|','|',('active', '=', False),('nsdg_xong', '=', False), ('pbdg_xong', '=', True),('is_self','!=',True)]}"/>
+					<button string="Phê duyệt" name="approve" type="object" class="btn btn-success btn-sm" attrs="{'invisible': ['|','|','|','|',('active', '=', False),('nsdg_xong', '=', False),('pbdg_xong', '=', False),('stage_id', 'in', [%(hr_ta.dgungvien_stage_3)d,%(hr_ta.dgungvien_stage_4)d,%(hr_ta.dgungvien_stage_5)d]),('is_self','!=',True)]}"/>
+					<button string="Phê duyệt" name="hcns_approve" type="object" class="btn btn-success btn-sm" attrs="{'invisible': ['|','|',('active', '=', False),('stage_id', '!=', %(hr_ta.dgungvien_stage_5)d),('is_self','!=',True)]}"/>
+					<button string="Hủy" name="huy" type="object" class="btn btn-danger btn-sm" attrs="{'invisible': ['|','|',('stage_id', '=', %(hr_ta.dgungvien_stage_3)d),('stage_id', '=', %(hr_ta.dgungvien_stage_4)d),('is_self','!=',True)]}"/>
+					<field name="stage_id" widget="statusbar"/>
+                </header>
+                <sheet>
+					<div class="oe_title pr-0">
+						<field name="name" invisible="1"/>
+						<label for="applicant_id"/>
+						<h1>
+							<field name="applicant_id" readonly="1"/>
+						</h1>						
+					</div>
+					<group>
+						<group>
+							<field name="job_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+							<field name="department_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+							<field name="company_id"/>
+						</group>
+						<group>
+							<field name="user_id" readonly="1"/>							
+						</group>
+					</group>
+					<notebook>
+						<page name="hcns_danhgia" string="Đánh giá của Hành chánh - Nhân sự">
+							<group>
+								<group string="Đánh giá chung">
+									<field name="tinhcach_ids" widget="many2many_tags" required="0"/>
+									<field name="chiuapluc" required="0"/>
+									<field name="dienmao_tacphong" required="0"/>
+									<field name="giongnoi" required="0"/>
+									<field name="phuhop_vanhoa" required="0"/>
+								</group>
+								<group string="Kiến thức kỹ năng">
+									<field name="kt_chuyenmon" required="0"/>
+									<field name="kn_giaotiep" required="0"/>
+									<field name="td_ngoaingu" required="0"/>
+									<field name="td_vitinh" required="0"/>
+									<field name="kn_khac"/>
+								</group>
+							</group>
+							<group string="Phù hợp/ Hạn chế">
+								<group>
+									<field name="nsdg_hanche" string="Điểm hạn chế" required="1"/>									
+								</group>
+								<group>
+									<field name="nsdg_phuhop" string="Điểm phù hợp" required="1"/>
+									<field name="nsdg_ketluan" string="Kết luận" invisible="1"/>
+									<field name="nsdg_dexuat" string="Đề xuất" invisible="1"/>
+									<field name="nsdg_xong" invisible="1"/>
+								</group>
+							</group>
+						</page>
+						<page name="pbchuyenmon_danhgia" string="Đánh giá của Phòng/ Ban chuyên môn" attrs="{'invisible': [('nsdg_xong', '!=', True)]}">
+							<group>
+								<group string="Phù hợp/ Hạn chế">
+									<field name="pbdg_hanche" string="Điểm hạn chế" attrs="{'required' : [('nsdg_xong', '=', True)]}"/>
+									<field name="pbdg_phuhop" string="Điểm phù hợp" attrs="{'required' : [('nsdg_xong', '=', True)]}"/>
+									<field name="pbdg_xong" invisible="1"/>
+								</group>
+								<group string="Kết luận/ Đề xuất">
+									<field name="pbdg_ketluan" string="Kết luận"  attrs="{'required' : [('nsdg_xong', '=', True)]}"/>
+									<field name="pbdg_dexuat" string="Đề xuất" invisible="1"/>
+									<field name="pbdg_ketqua" attrs="{'required' : [('nsdg_xong', '=', True)]}"/>
+									<field name="pbdg_ketqua_kdat" attrs="{'invisible' : ['|',('pbdg_ketqua', '=', 'dat'),('pbdg_ketqua', '=', False)], 'required' : [('pbdg_ketqua', '=', 'khongdat')]}"/>
+								</group>
+							</group>
+							<group>
+								<field name="currency_id" invisible="1"/>
+								<group string="Lương">
+									<field name="luong_chinh" attrs="{'required' : [('pbdg_ketqua', '=', 'dat')]}"/>
+									<label for="pt_thuviec"/>
+									<div class="o_row">
+										<field name="pt_thuviec" attrs="{'required' : [('pbdg_ketqua', '=', 'dat')]}"/>
+										<span> %</span>
+									</div>
+									<field name="luong_thuviec" attrs="{'required' : [('pbdg_ketqua', '=', 'dat')]}"/>
+								</group>
+								<group string="Thử việc">									
+									<field name="tgthuviec_id" attrs="{'required' : [('pbdg_ketqua', '=', 'dat')]}"/>										
+									<label for="thuviec_tu"/>
+									<div class="o_row">
+										<field name="thuviec_tu" attrs="{'required' : [('pbdg_ketqua', '=', 'dat')]}"/>
+										<span> đến </span>
+										<field name="thuviec_den"/>
+									</div>
+								</group>
+								<group string="Phụ cấp" name="phucap">
+									<div class="o_row">
+										<field name="phucap_ids" nolabel="1">
+											<tree string="Phụ cấp" editable="bottom" sample="1">
+												<field name="loaiphucap_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+												<field name="ma"/>
+												<field name="name"/>
+												<field name="phucap"/>
+											</tree>
+										</field>
+									</div>
+								</group>
+							</group>
+						</page>
+					</notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'open_attachments': True}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+	<record model="ir.ui.view" id="hr_dgungvien_kanban">
+		<field name="name">hr.dgungvien.kanban</field>
+		<field name="model">hr.dgungvien</field>
+		<field name="arch" type="xml">
+			<kanban default_group_by="stage_id" sample="1" records_draggable="false" class="o_kanban_small_column o_kanban_project_tasks">
+				<field name="stage_id" options='{"group_by_tooltip": {"requirements": "Requirements"}}'/>
+				<field name="applicant_id"/>
+				<field name="description"/>
+				<field name="color"/>
+				<field name="active"/>
+				<field name="thuviec_tu"/>
+				<field name="thuviec_den"/>
+				<templates>
+					<t t-name="kanban-box">
+						<div t-attf-class="{{'oe_kanban_color_' + kanban_getcolor(record.color.raw_value)}} oe_kanban_card oe_kanban_global_click">
+							<div class="oe_kanban_content">
+								<div class="o_kanban_record_top">
+									<div class="o_kanban_record_headings">
+										<strong class="o_kanban_record_title text-uppercase">
+											<field name="applicant_id"/>
+										</strong>
+									</div>
+									<div class="o_dropdown_kanban dropdown" t-if="!selection_mode" groups="base.group_user">
+										<a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+											<span class="fa fa-ellipsis-v"/>
+										</a>
+										<div class="dropdown-menu" role="menu">
+											<a t-if="widget.editable" role="menuitem" type="edit" class="dropdown-item">Edit</a>
+											<a t-if="widget.editable" role="menuitem" class="dropdown-item" name="toggle_active" type="object">
+												<t t-if="record.active.raw_value">Archive</t>
+												<t t-if="!record.active.raw_value">Restore</t>
+											</a>
+											<a t-if="widget.deletable" role="menuitem" type="delete" class="dropdown-item">Delete</a>
+											<div role="separator" class="dropdown-divider"/>
+											<ul class="oe_kanban_colorpicker" data-field="color"/>
+										</div>
+									</div>
+								</div>
+								<div class="o_kanban_record_body">
+									<small class="o_kanban_record_subtitle text-muted">
+										<t t-if="record.job_id.raw_value">
+											<span>
+												Chức danh: <span class="badge badge-pill badge-info">
+													<field name="job_id"/>
+												</span><br/>
+											</span>
+										</t>
+										<t t-if="record.department_id.raw_value">
+											<span>
+												Phòng/ Ban: <span class="badge badge-pill badge-info">
+													<field name="department_id"/>
+												</span><br/>
+											</span>
+										</t>
+										<t t-if="record.company_id.raw_value">
+											<span>
+												Công ty: <span class="badge badge-pill badge-info">
+													<field name="company_id"/>
+												</span><br/>
+											</span>
+										</t>
+										<t t-if="record.thuviec_tu">
+											<span>
+												Thử việc từ: <span class="badge badge-pill badge-warning">
+													<field name="thuviec_tu"/>
+												</span><br/>
+											</span>
+										</t>
+										<t t-if="record.thuviec_den">
+											<span>
+												Thử việc đến: <span class="badge badge-pill badge-warning">
+													<field name="thuviec_tu"/>
+												</span><br/>
+											</span>
+										</t>
+									</small>
+								</div>
+								<div class="o_kanban_record_bottom" t-if="!selection_mode">
+									<div class="oe_kanban_bottom_left">
+										<field name="thuviec_tu" widget="remaining_days"/>
+									</div>
+									<div class="oe_kanban_bottom_right" t-if="!selection_mode">
+										<field name="user_id" widget="many2one_avatar_user"/>
+									</div>
+								</div>
+							</div>
+							<div class="oe_clear"/>
+						</div>
+					</t>
+				</templates>
+			</kanban>
+		</field>
+	</record>
+	
+	<!--Đánh giá ứng viên search-->
+	<record model="ir.ui.view" id="hr_dgungvien_search">
+		<field name="name">hr.dgungvien.view.search</field>
+		<field name="model">hr.dgungvien</field>
+		<field name="arch" type="xml">
+			<search string="Search Đánh giá ứng viên">					
+				<field name="stage_id" domain="[]"/>
+				<filter string="Cần xử lý" name="canxuly" domain="[('stage_id', 'not in', [%(dgungvien_stage_3)d,%(dgungvien_stage_4)d])]"/>
+				<filter string="Đã lưu trữ" name="inactive" domain="[('active', '=', False)]"/>
+				<separator/>				
+				<group expand="0" string="Group By">					
+				</group>
+				<searchpanel>
+					<field name="company_id" enable_counters="1"/>
+					<field name="department_id" enable_counters="1"/>
+					<field name="stage_id" enable_counters="1"/>
+				</searchpanel>
+			</search>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="hr_dgungvien_pivot">
+		<field name="name">hr.dgungvien.pivot</field>
+		<field name="model">hr.dgungvien</field>
+		<field name="arch" type="xml">
+			<pivot string="Dánh giá ứng viên">
+				<field name="department_id" type="row"/>
+				<field name="stage_id" type="col"/>
+			</pivot>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="hr_dgungvien_calendar">
+		<field name="name">hr.dgungvien.calendar</field>
+		<field name="model">hr.dgungvien</field>
+		<field name="arch" type="xml">
+			<calendar date_start="thuviec_tu" color="applicant_id"  mode="month" quick_add="False" event_open_popup="False">
+				<field name="stage_id" filters="1"/>
+				<field name="applicant_id"/>
+				<field name="job_id"/>
+				<field name="company_id" filters="1"/>
+				<field name="department_id" filters="1"/>
+				<field name="user_id"/>
+				<field name="thuviec_tu"/>
+			</calendar>
+		</field>
+	</record>		
+    <!-- ACTION-->
+	<record id="hr_dgungvien_pheduyetcuoi_act" model="ir.actions.act_window">
+		<field name="name">Đánh giá ứng viên phê duyệt cuối</field>
+		<field name="res_model">hr.dgungvien.pheduyetcuoi</field>
+		<field name="view_mode">tree,form</field>
+		<field name="view_id" ref="hr_dgungvien_pheduyetcuoi_tree"/>
+	</record>
+    <record model="ir.actions.act_window" id="hr_dgungvien_act">
+        <field name="name">Đánh giá ứng viên</field>
+        <field name="res_model">hr.dgungvien</field>        
+        <field name="view_mode">tree,kanban,form,pivot,calendar,activity</field>
+        <field name="view_id" eval="hr_dgungvien_tree"/>
+		<field name="context">{'search_default_canxuly': 1}</field>
+    </record>
+	<record model="ir.actions.act_window" id="hr_dgungvien_childs_act">
+		<field name="name">Đánh giá ứng viên</field>
+		<field name="res_model">hr.dgungvien</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('applicant_id', '=', active_id)]</field>
+	</record>
+	<record model="ir.actions.act_window" id="hr_dgungvien_employee_act">
+		<field name="name">Đánh ứng viên</field>
+		<field name="res_model">hr.dgungvien</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('employee_id', '=', active_id)]</field>
+	</record>
+	
+    <!-- Menu -->
+	<menuitem name="Tuyển dụng" parent="hr_od.menu_hr_danhgia" id="menu_hr_dg_tuyendung" sequence="3"/>
+    <menuitem name="Đánh giá ứng viên" parent="menu_hr_dg_tuyendung" id="menu_hr_dgungvien" action="hr_dgungvien_act" sequence="3"/>
+	<menuitem id="menu_hr_dgungvien_pheduyetcuoi" name="DGUV Phê duyệt cuối" parent="hr_recruitment.menu_hr_recruitment_configuration" action="hr_dgungvien_pheduyetcuoi_act" groups="base.group_no_one" sequence="10"/>
+	<!--Applicant inherit-->
+	<record id="thc_inherit_dgungvien_hr_applicant_form" model="ir.ui.view">
+		<field name="name">thc.inherit.dgungvien.hr.applicant.form</field>
+		<field name="model">hr.applicant</field>
+		<field name="priority">16</field>
+		<field name="inherit_id" ref="hr_ta.thc_inherit_hr_applicant_form"/>
+		<field name="arch" type="xml">
+			<div name="button_box" position="inside">
+				<button name="%(hr_ta.hr_dgungvien_childs_act)d" type="action" class="oe_stat_button" icon="fa-edit">
+					<field string="Đánh giá" name="soluong_danhgia" widget="statinfo"/>
+				</button>
+			</div>
+		</field>
+	</record>
+
+	<record id="kh_dg_ungvien_hr_employee_form" model="ir.ui.view">
+		<field name="name">kh.dg.ungvien.hr.employee.form</field>
+		<field name="model">hr.employee</field>
+		<field name="priority">31</field>
+		<field name="inherit_id" ref="hr.view_employee_form"/>
+		<field name="arch" type="xml">
+			<div name="button_box" position="inside">				
+				<button name="%(hr_ta.hr_dgungvien_employee_act)d" type="action" class="oe_stat_button" icon="fa-pencil-square-o">
+					<field string="Đánh giá ứng viên" name="dgungvien_count" widget="statinfo"/>
+				</button>
+			</div>
+		</field>
+	</record>
+</odoo>

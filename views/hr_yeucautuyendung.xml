@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Stage Tree View -->
+    <record model="ir.ui.view" id="hr_yeucautuyendung_stage_tree">
+        <field name="name">hr.yeucautuyendung.stage.tree</field>
+        <field name="model">hr.yeucautuyendung.stage</field>
+        <field name="arch" type="xml">
+            <tree string="Stages" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- YEUCAUTUYENDUNG -->
+    <record model="ir.ui.view" id="hr_yeucautuyendung_tree">
+        <field name="name">hr.yeucautuyendung.tree</field>
+        <field name="model">hr.yeucautuyendung</field>
+        <field name="arch" type="xml">
+            <tree string="Yêu cầu tuyển dụng" sample="1" decoration-info="stage_id == %(yeucautuyendung_stage_2)d or stage_id == %(yeucautuyendung_stage_3)d" decoration-success="stage_id == %(yeucautuyendung_stage_4)d" decoration-muted="stage_id == %(yeucautuyendung_stage_5)d" decoration-danger="stage_id == %(yeucautuyendung_stage_6)d" >
+                <field name="name"/>
+				<field name="lydo_id"/>
+				<field name="loaiyeucau_id"/>
+				<field name="job_id"/>
+				<field name="department_id" optional="hide"/>
+				<field name="department_name"/>
+				<field name="dinhbien" optional="hide"/>
+				<field name="nhansu_hienco" optional="hide"/>
+				<field name="soluong"/>
+				<field name="ngachluong_id"/>
+				<field name="thoigiancanns"/>
+				<field name="user_id" readonly="1"/>
+				<field name="stage_id" decoration-info="stage_id == %(yeucautuyendung_stage_2)d or stage_id == %(yeucautuyendung_stage_3)d" decoration-success="stage_id == %(yeucautuyendung_stage_4)d" decoration-muted="stage_id == %(yeucautuyendung_stage_5)d" decoration-danger="stage_id == %(yeucautuyendung_stage_6)d" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_yeucautuyendung_form">
+        <field name="name">hr.yeucautuyendung.form</field>
+        <field name="model">hr.yeucautuyendung</field>
+        <field name="arch" type="xml">
+            <form string="Yêu cầu tuyển dụng">
+				<field name="is_self" invisible="1"/>
+                <header>
+					<button name="assign_to_me" string="Nhận yêu cầu" type="object" class="btn btn-info btn-sm" confirm='Bạn có chắc muốn xác nhận?' attrs="{'invisible' : [('user_id','!=', False)]}" gruops="hr_recruitment.group_hr_recruitment_user"/>
+					<button name="submit" string="Xác nhận" type="object" class="btn-success" attrs="{'invisible' : ['|',('stage_id', '!=', %(yeucautuyendung_stage_1)d),('is_self','!=',True)]}"/>					
+					<button name="quanly_approve" string="Phê duyệt" type="object" class="btn-success" attrs="{'invisible' : ['|',('stage_id', '!=', %(yeucautuyendung_stage_2)d),('is_self','!=',True)]}"/>
+					<button name="bod_approve" string="Phê duyệt" type="object" class="btn-success" attrs="{'invisible' : ['|',('stage_id', '!=', %(yeucautuyendung_stage_3)d),('is_self','!=',True)]}"/>
+					<!--<button name="reject" string="Từ chối" type="object" class="btn-warning" attrs="{'invisible' : ['|',('stage_id', 'in', [%(yeucautuyendung_stage_1)d,%(yeucautuyendung_stage_4)d,%(yeucautuyendung_stage_5)d,%(yeucautuyendung_stage_6)d]),('is_self','!=',True)]}"/>-->
+					<button name="complete" string="Hoàn thành" type="object" class="btn-success" attrs="{'invisible' : ['|',('stage_id', '!=', %(yeucautuyendung_stage_4)d),('is_self','!=',True)]}"/>
+					<button name="cancel" string="Hủy" type="object" class="btn-danger" attrs="{'invisible' : ['|',('stage_id', '!=', %(yeucautuyendung_stage_1)d),('is_self','!=',True)]}"/>
+                    <field name="stage_id" widget="statusbar"/>
+                </header>
+                <sheet>
+					<div class="oe_title pr-0">
+						<h1 class="d-flex flex-row justify-content-between">							
+							<field name="name" class="o_task_name text-truncate" placeholder="Tên yêu cầu ..."/>
+						</h1>
+					</div>
+                    <group>
+                        <group>
+                            <field name="user_id" readonly="1"/>
+							<field name="company_id"/>
+							<field name="department_id" domain="[('company_id','=',company_id)]" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>							
+                        </group>
+						<group>									
+							<field name="loaiyeucau_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+							<field name="lydo_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+							<field name="lydo_khac" attrs="{'invisible': [('lydo_id','!=', 4)]}"/>
+							<field name="priority" widget="priority" class="mr-3"/>
+						</group>
+                    </group>
+					<notebook>
+						<page name="yeucauchung" string="Yêu cầu chung">
+							<group>
+								<group>									
+									<field name="job_id" domain="[('department_id','=',department_id)]" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="ngachluong_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="dinhbien" invisible="1"/>
+									<field name="nhansu_hienco" invisible="1"/>
+									<field name="soluong"/>									
+								</group>
+								<group>									
+									<field name="thoigiancanns"/>
+									<field name="honnhan"/>
+									<field name="yeucauchung_khac"/>
+								</group>
+							</group>							
+						</page>
+						<page name="noidungyeucau" string="Nội dung yêu cầu">
+							<group string="Tiêu chuẩn Tuyển dụng">
+								<group>
+									<field name="gioitinh"/>
+									<label for="tuoi_from" string="Độ tuổi"/>
+									<div class="o_row">
+										<field name="tuoi_from"/> - <field name="tuoi_to"/>								
+									</div>									
+									<field name="trinhdovh_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+									<field name="chuyenmon"/>
+									<field name="kinhnghiem"/>									
+								</group>
+								<group>
+									<field name="ngoaingu"/>
+									<field name="vitinh_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+									<field name="congtac"/>
+									<field name="lamviec"/>
+									<field name="noilamviec"/>
+									<field name="kynang_khac"/>
+								</group>
+							</group>
+							<group>
+								<field name="description"/>
+							</group>
+						</page>
+					</notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'open_attachments': True}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_yeucautuyendung_kanban">
+        <field name="name">hr.yeucautuyendung.kanban</field>
+        <field name="model">hr.yeucautuyendung</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" sample="1" records_draggable="false" class="o_kanban_small_column o_kanban_project_tasks">
+                <field name="stage_id" options='{"group_by_tooltip": {"requirements": "Requirements"}}'/>
+                <field name="name"/>
+                <field name="description"/>
+				<field name="color"/>
+				<field name="active"/>
+				<field name="thoigiancanns"/>
+                <templates>
+                    <t t-name="kanban-box">
+						<div t-attf-class="{{'oe_kanban_color_' + kanban_getcolor(record.color.raw_value)}} oe_kanban_card oe_kanban_global_click">
+							<div class="oe_kanban_content">
+								<div class="o_kanban_record_top">
+									<div class="o_kanban_record_headings">
+										<strong class="o_kanban_record_title text-uppercase">
+											<field name="name"/>
+										</strong>							
+									</div>
+									<div class="o_dropdown_kanban dropdown" t-if="!selection_mode" groups="base.group_user">
+										<a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+											<span class="fa fa-ellipsis-v"/>
+										</a>
+										<div class="dropdown-menu" role="menu">	
+											<a t-if="widget.editable" role="menuitem" type="edit" class="dropdown-item">Edit</a>
+											<a t-if="widget.editable" role="menuitem" class="dropdown-item" name="toggle_active" type="object">
+												<t t-if="record.active.raw_value">Archive</t>
+												<t t-if="!record.active.raw_value">Restore</t>
+											</a>
+											<a t-if="widget.deletable" role="menuitem" type="delete" class="dropdown-item">Delete</a>
+											<div role="separator" class="dropdown-divider"/>
+											<ul class="oe_kanban_colorpicker" data-field="color"/>
+										</div>
+									</div>
+								</div>
+								<div class="o_kanban_record_body">
+									<small class="o_kanban_record_subtitle text-muted">
+										<t t-if="record.user_id.raw_value"><span>Người xử lý: <span class="badge badge-pill badge-info"><field name="user_id"/></span><br/></span></t>
+										<t t-if="record.lydo_id.raw_value"><span>Lý do: <span class="badge badge-pill badge-info"><field name="lydo_id"/></span><br/></span></t>
+										<t t-if="record.loaiyeucau_id.raw_value"><span>Định biên: <span class="badge badge-pill badge-info"><field name="loaiyeucau_id"/></span><br/></span></t>
+										<t t-if="record.job_id.raw_value"><span>Vị trí tuyển dụng: <span class="badge badge-pill badge-info"><field name="job_id"/></span><br/></span></t>
+										<t t-if="record.department_id.raw_value"><span>Phòng Ban: <span class="badge badge-pill badge-info"><field name="department_id"/></span><br/></span></t>										
+										<t t-if="record.soluong.raw_value"><span>Số lượng: <span class="badge badge-pill badge-info"><field name="soluong"/></span><br/></span></t>
+										<t t-if="record.thoigiancanns"><span>Thơi gian cần nhân sự: <span class="badge badge-pill badge-info"><field name="thoigiancanns"/></span><br/></span></t>
+									</small>
+								</div>
+								<div class="o_kanban_record_bottom" t-if="!selection_mode">
+									<div class="oe_kanban_bottom_left">
+										<field name="priority" widget="priority"/>
+										<field name="thoigiancanns" widget="remaining_days"/>
+									</div>
+									<div class="oe_kanban_bottom_right" t-if="!selection_mode">										
+										<field name="user_id" widget="many2one_avatar_user"/>
+									</div>
+								</div>
+							</div>
+							<div class="oe_clear"/>
+						</div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+	<record model="ir.ui.view" id="hr_yeucautuyendung_search">
+		<field name="name">hr.yeucautuyendung.view.search</field>
+		<field name="model">hr.yeucautuyendung</field>
+		<field name="arch" type="xml">
+			<search string="Search Yêu cầu Tuyển dụng">				
+				<field name="job_id"/>
+				<field name="department_id" operator="child_of"/>
+				<field name="user_id"/>
+				<field name="stage_id" domain="[]"/>								
+				<filter string="Cần xử lý" name="canxuly" domain="[('stage_id', 'not in', [%(yeucautuyendung_stage_5)d,%(yeucautuyendung_stage_6)d])]"/>
+				<filter string="Đã lưu trữ" name="inactive" domain="[('active', '=', False)]"/>
+				<separator/>				
+				<group expand="0" string="Group By">
+					<filter string="Responsible" name="responsible" domain="[]"  context="{'group_by': 'user_id'}"/>
+					<filter string="Job" name="job" domain="[]" context="{'group_by': 'job_id'}"/>					
+					<filter string="Stage" name="stage" domain="[]" context="{'group_by': 'stage_id'}"/>
+					<filter string="Department" name="department" domain="[]" context="{'group_by': 'department_id'}"/>									
+				</group>
+				<searchpanel>
+					<field name="company_id" enable_counters="1"/>
+					<field name="department_id" enable_counters="1"/>
+					<field name="loaiyeucau_id" enable_counters="1"/>
+					<field name="stage_id" enable_counters="1"/>
+				</searchpanel>
+			</search>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="hr_yeucautuyendung_pivot">
+		<field name="name">hr.yeucautuyendung.pivot</field>
+		<field name="model">hr.yeucautuyendung</field>
+		<field name="arch" type="xml">
+			<pivot string="Yêu cầu tuyển dụng">
+				<field name="department_id" type="row"/>
+				<field name="stage_id" type="col"/>				
+			</pivot>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="hr_yeucautuyendung_calendar">
+		<field name="name">hr.yeucautuyendung.calendar</field>
+		<field name="model">hr.yeucautuyendung</field>
+		<field name="arch" type="xml">
+			<calendar date_start="thoigiancanns" color="job_id"  mode="month" quick_add="False" event_open_popup="True">
+				<field name="stage_id" filters="1"/>
+				<field name="create_uid"/>
+				<field name="job_id"/>
+				<field name="company_id" filters="1"/>
+				<field name="department_id" filters="1"/>
+				<field name="loaiyeucau_id"/>
+				<field name="lydo_id" filters="1"/>
+				<field name="soluong"/>
+				<field name="user_id"/>
+				<field name="thoigiancanns"/>
+			</calendar>
+		</field>
+	</record>
+    <!-- ACTION-->
+
+    <record id="hr_yeucautuyendung_stage_act" model="ir.actions.act_window">
+        <field name="name">Yêu cầu tuyển dụng Stages</field>
+        <field name="res_model">hr.yeucautuyendung.stage</field>
+        <field name="view_mode">treer</field>
+        <field name="view_id" ref="hr_yeucautuyendung_stage_tree"/>
+    </record>
+
+    <record model="ir.actions.act_window" id="hr_yeucautuyendung_act">
+        <field name="name">Yêu cầu tuyển dụng</field>
+        <field name="res_model">hr.yeucautuyendung</field>
+        <field name="view_mode">tree,kanban,form,pivot,calendar,activity</field>
+		<field name="context">{'search_default_canxuly': 1}</field>
+        <!--<field name="view_id" eval="hr_yeucautuyendung_kanban"/>-->
+    </record>
+
+
+    <!-- Menu -->
+
+    <menuitem id="menu_hr_yeucautuyendung_stage" name="Yêu cầu tuyển dụng Stages" parent="hr_recruitment.menu_hr_recruitment_configuration" action="hr_yeucautuyendung_stage_act" groups="base.group_no_one" sequence="10"/>
+    <menuitem name="Yêu cầu tuyển dụng" parent="hr_od.menu_hr_yeucau" groups="hr_od.hr_od_group_manager,hr_recruitment.group_hr_recruitment_user" id="menu_hr_yeucautuyendung" action="hr_yeucautuyendung_act" sequence="1"/>
+	<menuitem name="Yêu cầu tuyển dụng" parent="hr_recruitment.menu_hr_recruitment_root" groups="hr_recruitment.group_hr_recruitment_user" id="menu_hr_yeucautuyendung_ta" action="hr_yeucautuyendung_act" sequence="1"/>
+</odoo>

@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!--Mail template gửi kế hoạch tiếp nhận ứng viên-->
+	<record id="mail_template_tiepnhan" model="mail.template">
+		<field name="name">Tiếp nhận CBNV Mới</field>
+		<field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+		<field name="subject">KẾ HOẠCH TIẾP NHẬN CBNV MỚI: ${object.name}</field>
+		<field name="email_from">tuyendung@thuanhai.com.vn</field>		
+		<field name="body_html" type="html">
+			<div>
+				<b><u>Kính gửi:</u> Anh/ Chị các Phòng/ Ban,</b>
+				<br />
+				<br />
+				Bộ phân Tuyển dụng xin gửi đến các Anh/ Chị về việc CBNV mới nhận việc như sau:
+				<br/>
+				<br />
+				<table class="table table-bordered  text-center">
+					<tr class="table-success">						
+						<td>
+							<b>Họ và Tên</b>
+						</td>
+						<td>
+							<b>Chức danh</b>
+						</td>
+						<td>
+							<b>Phòng/ Ban</b>
+						</td>
+						<td>
+							<b>Ngày nhận việc</b>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							${object.name}
+						</td>
+						<td>
+							${object.job_id.name}
+						</td>
+						<td>
+							${object.department_id.name}
+						</td>
+						<td>
+							${object.thuviec_tu.strftime('%d/%m/%Y')}
+						</td>
+					</tr>
+				</table>
+				<br/>
+				Trân trọng cảm ơn.<br/>
+				<b>Phòng Hành Chính - Nhân sự</b>
+				<hr/>
+				<table>
+					<tr>
+						<td style="width:15%">
+							<img src="/web/image/res.company/${object.company_id.id}/logo" alt="Avatar" style="height: 60px;" />
+						</td>
+						<td>
+							<p style="text-transform:uppercase">
+								<b>${object.company_id.name}</b>
+							</p>
+							<b>A:</b> ${object.company_id.street}<br/>
+							<b>P:</b> ${object.company_id.phone} | <b>F:</b> +84 2836 227 880<br/>
+							<b>W:</b> ${object.company_id.website}<br/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<hr/>							
+							<i>IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.</i>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</field>
+	</record>
+
+	<!--Mail template gửi thư mời nhận việc-->
+	<record id="mail_template_thumoinhanviec" model="mail.template">
+		<field name="name">Thư mời nhận việc</field>
+		<field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+		<field name="subject">THƯ MỜI NHẬN VIỆC</field>
+		<field name="report_template" ref="hr_ta.ir_actions_report_thumoinhanviec"/>
+		<field name="report_name">THƯ MỜI NHẬN VIỆC</field>
+		<field name="email_from">tuyendung@thuanhai.com.vn</field>
+		<field name="body_html" type="html">
+			<div>
+				<b>
+					<u>Kính gửi:</u>
+					% if object.gender == 'male':
+						Anh  ${object.name}
+					% endif
+					% if object.gender == 'female':
+						Chị  ${object.name}
+					% endif
+					% if object.gender == 'other' or object.gender == False:
+						Anh/ Chị  ${object.name}
+					% endif
+				</b>
+				<br/>
+				<br/>
+				Trân trọng cảm ơn.<br/>
+				<b>Phòng Hành Chính - Nhân sự</b>
+				<hr/>
+				<table>
+					<tr>
+						<td style="width:15%">
+							<img src="/web/image/res.company/${object.company_id.id}/logo" alt="Avatar" style="height: 60px;" />
+						</td>
+						<td>
+							<p style="text-transform:uppercase">
+								<b>${object.company_id.name}</b>
+							</p>
+							<b>A:</b> ${object.company_id.street}<br/>
+							<b>P:</b> ${object.company_id.phone} | <b>F:</b> +84 2836 227 880<br/>
+							<b>W:</b> ${object.company_id.website}<br/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<hr/>
+							<i>IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.</i>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</field>
+	</record>
+
+	<!--Mail template gửi thư cảm ơn-->
+	<record id="mail_template_thucamon" model="mail.template">
+		<field name="name">Thư cảm ơn</field>
+		<field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+		<field name="subject">THƯ CẢM ƠN</field>		
+		<field name="email_from">tuyendung@thuanhai.com.vn</field>
+		<field name="email_to">${object.email_from}</field>
+		<field name="body_html" type="html">
+			<div>
+				<b>
+					<u>Kính gửi:</u>
+					% if object.gender == 'male':
+					Anh  ${object.name}
+					% endif
+					% if object.gender == 'female':
+					Chị  ${object.name}
+					% endif
+					% if object.gender == 'other' or object.gender == False:
+					Anh/ Chị  ${object.name}
+					% endif
+				</b>
+				<br/>
+				<br/>
+				Lời đầu tiên, Phòng Nhân sự của ${object.company_id.name} gửi lời cám ơn Anh đã quan tâm đến vị trí tuyển dụng và dành thời gian gửi hồ sơ, tham gia buổi phỏng vấn cùng Công ty chúng tôi.
+				<br/>
+				Qua buổi trao đổi về yêu cầu công việc và khả năng đáp ứng yêu cầu công việc của Anh, chúng tôi đánh giá cao về năng lực, trình độ chuyên môn của Anh. Tuy nhiên chúng tôi rất tiếc phải thông báo vị trí mà chúng tôi đang tìm kiếm chưa phù hợp với hồ sơ của Anh.
+				<br/>
+				Chúng tôi sẽ lưu trữ hồ sơ của Anh để tham khảo sau này.
+				<br/>
+				Chúng tôi rất hi vọng trong tương lai sẽ có thêm cơ hội để trở thành cộng sự cùng quý Anh.
+				<br/>
+				Đại diện Phòng Nhân sự của ${object.company_id.name}, kính chúc Anh sức khỏe và luôn thành công trong cuộc sống.
+				<br/>
+				<br/>
+				Trân trọng kính chào.<br/>
+				<b>Phòng Hành Chính - Nhân sự</b>
+				<hr/>
+				<table>
+					<tr>
+						<td style="width:15%">
+							<img src="/web/image/res.company/${object.company_id.id}/logo" alt="Avatar" style="height: 60px;" />
+						</td>
+						<td>
+							<p style="text-transform:uppercase"><b>${object.company_id.name}</b></p>
+							<b>A:</b> ${object.company_id.street}<br/>
+							<b>P:</b> ${object.company_id.phone} | <b>F:</b> +84 2836 227 880<br/>
+							<b>W:</b> ${object.company_id.website}<br/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<hr/>
+							<i>IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.</i>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</field>
+	</record>
+	
+	<!--Mail template Giới thiệu nhân viên mới-->
+	<record id="mail_template_giothieu_nv" model="mail.template">
+		<field name="name">Chào mừng CBNV Mới</field>
+		<field name="model_id" ref="hr.model_hr_employee"/>
+		<field name="subject">CHÀO MỪNG THÀNH VIÊN MỚI: ${object.name}</field>
+		<field name="email_from">tuyendung@thuanhai.com.vn</field>
+		<field name="email_to">"thuanhaiall@thuanhai.com.vn"</field>		
+		<field name="body_html" type="html">			
+			<div>
+				<table>
+					<tr>
+						<td colspan="3">
+							<img src="/web/image/res.company/${object.company_id.id}/logo" alt="Avatar" style="height: 50px;" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3" class="align-middle text-center">
+							<h2 style="color:red;">
+								<b>CHÀO MỪNG THÀNH VIÊN MỚI</b>
+							</h2>							
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<b>
+								&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<u>Kính gửi:</u> Ban Tổng Giám Đốc
+							</b>
+							<br />
+							<b>
+								&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<u>Đồng kính gửi:</u> Toàn thể CBNV ${object.company_id.name}
+							</b>
+						</td>						
+					</tr>
+					<tr>
+						<td colspan="2">
+							<br/>&#160;&#160;&#160;&#160;&#160;&#160; Phòng Hành chính - Nhân sự trân trọng giới thiệu đến Ban Lãnh đạo và toàn thể CBNV về sự gia nhập của nhân viên mới như sau:<br/>							
+						</td>
+						<td rowspan="7">
+							<br/>
+							<img src="/web/image/hr.employee/${object.id}/image_1920" alt="Avatar" style="height: 150px;" />
+						</td>
+					</tr>
+					<tr>
+						<td style="width:20%;">							
+							<b>
+								% if object.gender == 'male':
+									Anh  ${object.name}
+								% endif
+								% if object.gender == 'female':
+									Chị  ${object.name}
+								% endif
+								% if object.gender == 'other' or object.gender == False:
+									Anh/ Chị  ${object.name}
+								% endif
+							</b>
+						</td>
+						<td style="width:45%;">
+							Ngày sinh:
+							<b>
+							% if object.birthday:
+								${object.birthday.strftime('%m/%d/%Y')}
+							% endif	
+							</b>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							&#x025AA; Chức danh công việc: 
+						</td>
+						<td>
+							<b>
+							% if object.job_id:
+								${object.job_id.name}
+							% endif
+							</b>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							&#x025AA; Đơn vị công tác:
+						</td>
+						<td>
+							<b>
+							% if object.department_id:
+								${object.department_id.name}
+							% endif
+							</b>							
+						</td>
+					</tr>
+					<tr>
+						<td>
+							&#x025AA; Ngày vào làm:
+						</td>
+						<td>
+							<b>
+							% if object.ngayvaolam:
+								${object.ngayvaolam.strftime('%m/%d/%Y')}
+							% endif
+							</b>							
+						</td>
+					</tr>
+					<tr>
+						<td>
+							&#x025AA; Điện thoại:
+						</td>
+						<td>
+							<b>
+							% if object.work_phone:
+								${object.work_phone}
+							% endif		
+							</b>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							&#x025AA; Email:
+						</td>
+						<td>
+							<b>
+							% if object.work_email:
+								${object.work_email}
+							% endif
+							</b>
+						</td>
+					</tr>
+				</table>
+				<br/>
+				&#160;&#160;&#160;&#160;&#160;&#160; Phòng Hành chính - Nhân sự rất mong sẽ nhận được sự hỗ trợ và phối hợp chặt chẽ của các Phòng/ Ban, nhằm giúp <b>
+				% if object.gender == 'male':
+					Anh  ${object.name}
+				% endif
+				% if object.gender == 'female':
+					Chị  ${object.name}
+				% endif
+				% if object.gender == 'other' or object.gender == False:
+					Anh/ Chị  ${object.name}
+				% endif
+				</b>
+				sớm hội nhập vào môi trường văn hóa Công ty và hoàn thành tốt nhiệm vụ mới.
+				<br/>
+				<br/>
+				Trân trọng cảm ơn.<br/>
+				<b>Phòng Hành Chính - Nhân sự</b>
+				<hr/>
+				<table>
+					<tr>
+						<td style="width:15%">
+							<img src="/web/image/res.company/${object.company_id.id}/logo" alt="Avatar" style="height: 60px;" />							
+						</td>
+						<td>
+							<p style="text-transform:uppercase">
+								<b>${object.company_id.name}</b>
+							</p>
+							<b>A:</b> ${object.company_id.street}<br/>
+							<b>P:</b> ${object.company_id.phone} | <b>F:</b> +84 2836 227 880<br/>
+							<b>W:</b> ${object.company_id.website}<br/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<hr/>							
+							<i>IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.</i>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</field>
+	</record>
+</odoo>

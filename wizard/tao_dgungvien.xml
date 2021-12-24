@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!--Form View -->
+	<record model="ir.ui.view" id="hr_tao_dgungvien_form">
+		<field name="name">hr.tao.dgungvien.form</field>
+		<field name="model">hr.tao.dgungvien</field>
+		<field name="arch" type="xml">
+			<form string="Tạo đánh giá ứng viên">
+				<group>
+					<group string="Đánh giá chung">
+						<field name="tinhcach_ids" widget="many2many_tags" required="0"/>
+						<field name="chiuapluc" required="0"/>
+						<field name="dienmao_tacphong" required="0"/>
+						<field name="giongnoi" required="0"/>
+						<field name="phuhop_vanhoa" required="0"/>
+					</group>
+					<group string="Kiến thức kỹ năng">
+						<field name="kt_chuyenmon" required="0"/>
+						<field name="kn_giaotiep" required="0"/>
+						<field name="td_ngoaingu" required="0"/>
+						<field name="td_vitinh" required="0"/>
+						<field name="kn_khac"/>
+					</group>
+				</group>
+				<group>
+					<group string="Phù hợp/ Hạn chế">
+						<field name="nsdg_hanche" string="Điểm hạn chế" required="1"/>
+						<field name="nsdg_phuhop" string="Điểm phù hợp" required="1"/>
+					</group>
+					<group string="Lương - Thời gian thử việc">
+						<field name="currency_id" invisible="1"/>
+						<field name="luong_chinh" required="1"/>
+						<label for="pt_thuviec"/>
+						<div class="o_row">
+							<field name="pt_thuviec"/>
+							<span> %</span>
+						</div>
+						<field name="luong_thuviec" required="1"/>
+						<field name="tgthuviec_id"/>
+						<label for="thuviec_tu"/>
+						<div class="o_row">
+							<field name="thuviec_tu" required="1"/>
+							<span> đến </span>
+							<field name="thuviec_den"/>
+						</div>
+					</group>
+				</group>				
+				<footer>
+					<button name="hoanthanh" string="Hoàn thành" type="object" class="btn-primary"/>
+					<button string="Hủy" class="btn-secondary" special="cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="hr_tao_dgungvien_act" model="ir.actions.act_window">
+		<field name="name">Tạo đánh giá ứng viên</field>
+		<field name="res_model">hr.tao.dgungvien</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="hr_tao_dgungvien_form"/>
+		<field name="target">new</field>
+	</record>
+
+	<record id="wizard_hr_tao_dgungvien_form" model="ir.ui.view">
+		<field name="name">wizard.hr.tao.dgungvien.form</field>
+		<field name="model">hr.applicant</field>
+		<field name="priority">31</field>
+		<field name="inherit_id" ref="hr_ta.thc_inherit_hr_applicant_form"/>
+		<field name="arch" type="xml">
+			<button name="pv_vong2" position="after">
+				<button name="%(hr_ta.hr_tao_dgungvien_act)d" string="Tạo đánh giá" type="action" class="btn btn-warning btn-sm" attrs="{'invisible' : ['|',('stage_id', 'not in', [%(hr_recruitment.stage_job2)d,%(hr_recruitment.stage_job3)d]),('dataodanhgia', '=', True)]}"/>
+			</button>
+		</field>
+	</record>	
+</odoo>

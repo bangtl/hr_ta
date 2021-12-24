@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="tuyendung_hr_department_form" model="ir.ui.view">
+		<field name="name">tuyendung.hr.department.form</field>
+		<field name="model">hr.department</field>
+		<field name="priority">30</field>
+		<field name="inherit_id" ref="hr.view_department_form"/>
+		<field name="arch" type="xml">			
+			<field name="pheduyet_dieuchuyen_id" position="after">				
+				<field name="pheduyet_dgthuviec_id" domain="[('company_id','=', company_id)]" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+			</field>
+		</field>
+	</record>	
+</odoo>

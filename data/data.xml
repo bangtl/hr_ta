@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+	<data>
+		<!--Applicant Stage-->
+		<record id="hr_applicant_stage_job5" model="hr.recruitment.stage">
+			<field name="name">Lưu trữ</field>
+			<field name="sequence">6</field>
+			<field name="fold">True</field>
+		</record>
+		
+		<!--Yêu cầu tuyển dụng stage-->
+		<record id="yeucautuyendung_stage_1" model="hr.yeucautuyendung.stage">
+			<field name="name">Mới</field>
+			<field name="sequence">1</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="yeucautuyendung_stage_2" model="hr.yeucautuyendung.stage">
+			<field name="name">Quản lý phê duyệt</field>
+			<field name="sequence">2</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="yeucautuyendung_stage_3" model="hr.yeucautuyendung.stage">
+			<field name="name">Ban TGĐ phê duyệt</field>
+			<field name="sequence">3</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="yeucautuyendung_stage_4" model="hr.yeucautuyendung.stage">
+			<field name="name">Tuyển dụng xử lý</field>
+			<field name="sequence">4</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="yeucautuyendung_stage_5" model="hr.yeucautuyendung.stage">
+			<field name="name">Hoàn thành</field>
+			<field name="sequence">5</field>
+			<field name="fold">True</field>
+		</record>
+		<record id="yeucautuyendung_stage_6" model="hr.yeucautuyendung.stage">
+			<field name="name">Hủy</field>
+			<field name="sequence">6</field>
+			<field name="fold">True</field>
+		</record>
+		<!--Yêu cầu tuyển dụng định biên-->
+		<record id="yeucautuyendung_loaiyeucau_1" model="hr.yeucautuyendung.loaiyeucau">
+			<field name="name">Trong kế hoạch</field>
+			<field name="sequence">1</field>
+		</record>
+		<record id="yeucautuyendung_loaiyeucau_2" model="hr.yeucautuyendung.loaiyeucau">
+			<field name="name">Ngoài kế hoạch</field>
+			<field name="sequence">2</field>
+		</record>
+		<!--Yêu cầu tuyển dụng định biên-->
+		<record id="yeucautuyendung_lydo_1" model="hr.yeucautuyendung.lydo">
+			<field name="name">Thay thế nghỉ việc</field>
+			<field name="sequence">1</field>
+		</record>
+		<record id="yeucautuyendung_lydo_2" model="hr.yeucautuyendung.lydo">
+			<field name="name">Tuyển mới</field>
+			<field name="sequence">2</field>
+		</record>
+		<record id="yeucautuyendung_lydo_3" model="hr.yeucautuyendung.lydo">
+			<field name="name">Trù bị nhân sự</field>
+			<field name="sequence">3</field>
+		</record>
+		<record id="yeucautuyendung_lydo_4" model="hr.yeucautuyendung.lydo">
+			<field name="name">Khác</field>
+			<field name="sequence">4</field>
+		</record>
+		
+		<!--Đánh giá ứng viên stage-->
+		<record id="dgungvien_stage_1" model="hr.dgungvien.stage">
+			<field name="name">Mới</field>
+			<field name="sequence">1</field>
+			<field name="fold">False</field>
+		</record>		
+		<record id="dgungvien_stage_2" model="hr.dgungvien.stage">
+			<field name="name">Phòng/ Ban đánh giá</field>
+			<field name="sequence">2</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="dgungvien_stage_5" model="hr.dgungvien.stage">
+			<field name="name">HCNS Phê duyệt</field>
+			<field name="sequence">3</field>
+			<field name="fold">True</field>
+		</record>
+		<record id="dgungvien_stage_3" model="hr.dgungvien.stage">
+			<field name="name">Hoàn thành</field>
+			<field name="sequence">4</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="dgungvien_stage_4" model="hr.dgungvien.stage">
+			<field name="name">Hủy</field>
+			<field name="sequence">5</field>
+			<field name="fold">True</field>
+		</record>		
+		<!--Kế hoạch thử việc-->
+		<record id="khthuviec_stage_1" model="hr.khthuviec.stage">
+			<field name="name">Mới</field>
+			<field name="sequence">1</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="khthuviec_stage_2" model="hr.khthuviec.stage">
+			<field name="name">Đang thực hiện</field>
+			<field name="sequence">2</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="khthuviec_stage_3" model="hr.khthuviec.stage">
+			<field name="name">QL trực tiếp đánh giá</field>
+			<field name="sequence">3</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="khthuviec_stage_4" model="hr.khthuviec.stage">
+			<field name="name">QL Phòng/ Ban đánh giá</field>
+			<field name="sequence">4</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="khthuviec_stage_5" model="hr.khthuviec.stage">
+			<field name="name">Hoàn thành</field>
+			<field name="sequence">5</field>
+			<field name="fold">True</field>
+		</record>
+		<record id="khthuviec_stage_6" model="hr.khthuviec.stage">
+			<field name="name">Hủy</field>
+			<field name="sequence">6</field>
+			<field name="fold">True</field>
+		</record>
+		
+		<!--Đánh giá thử việc-->
+		<record id="dgthuviec_stage_1" model="hr.dgthuviec.stage">
+			<field name="name">Nhân tự tự đánh giá</field>
+			<field name="sequence">1</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="dgthuviec_stage_2" model="hr.dgthuviec.stage">
+			<field name="name">QL trực tiếp đánh giá</field>
+			<field name="sequence">2</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="dgthuviec_stage_3" model="hr.dgthuviec.stage">
+			<field name="name">QL Phòng/ Ban đánh giá</field>
+			<field name="sequence">3</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="dgthuviec_stage_4" model="hr.dgthuviec.stage">
+			<field name="name">Phê duyệt cuối</field>
+			<field name="sequence">4</field>
+			<field name="fold">False</field>
+		</record>
+		<record id="dgthuviec_stage_5" model="hr.dgthuviec.stage">
+			<field name="name">Hoàn thành</field>
+			<field name="sequence">5</field>
+			<field name="fold">True</field>
+		</record>
+		<record id="dgthuviec_stage_6" model="hr.dgthuviec.stage">
+			<field name="name">Hủy</field>
+			<field name="sequence">6</field>
+			<field name="fold">True</field>
+		</record>
+
+		<!--Đánh giá thử việc-->
+		<record id="tgthuviec_1" model="hr.tgthuviec">
+			<field name="name">06 ngày</field>
+			<field name="thoigian">7</field>
+			<field name="sequence">1</field>
+		</record>
+		<record id="tgthuviec_2" model="hr.tgthuviec">
+			<field name="name">30 ngày</field>
+			<field name="thoigian">30</field>
+			<field name="sequence">2</field>
+		</record>
+		<record id="tgthuviec_3" model="hr.tgthuviec">
+			<field name="name">60 ngày</field>
+			<field name="thoigian">60</field>
+			<field name="sequence">3</field>
+		</record>
+		<record id="tgthuviec_4" model="hr.tgthuviec">
+			<field name="name">180 ngày</field>
+			<field name="thoigian">180</field>
+			<field name="sequence">5</field>
+		</record>
+		<record id="tgthuviec_5" model="hr.tgthuviec">
+			<field name="name">90 ngày (Thực tập sinh)</field>
+			<field name="thoigian">90</field>
+			<field name="sequence">4</field>
+		</record>
+	</data>	
+</odoo>

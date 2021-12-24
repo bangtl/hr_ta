@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>	
+	<record id="ir_actions_report_thumoinhanviec" model="ir.actions.report">
+		<field name="name">Thư mời nhận việc</field>
+		<field name="model">hr.applicant</field>
+		<field name="report_type">qweb-pdf</field>
+		<field name="report_name">hr.applicant.thumoinhanviec</field>
+		<field name="report_file">hr.applicant.thumoinhanviec</field>
+		<field name="print_report_name">'%s' % (object.name)</field>				
+		<field name="binding_model_id" ref="model_hr_applicant"/>
+		<field name="binding_type">report</field>
+	</record>
+	<record model="ir.ui.view" id="thumoinhanviec">
+		<field name="name">hr.applicant.thumoinhanviec</field>
+		<field name="key">hr.applicant.thumoinhanviec</field>
+		<field name="model">hr.applicant</field>
+		<field name="type">qweb</field>
+		<field name="arch" type="xml">
+			<t name="thumoinhanviec" t-name="thumoinhanviec">
+				<t t-set="data_report_landscape" t-value="False"/>
+				<t t-set="full_width" t-value="True"/>
+				<t t-set="foo" t-value=" 100* (' '.replace(' ',u'\xa0').encode('utf-8')) "/>
+				<t t-call="web.html_container">
+					<t t-call="web.external_layout">
+						<xpath expr="//head" position="inside">
+							<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"/>
+							<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"/>
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"/>
+							<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"/>
+							<style>
+								@font-face {
+								font-family: 'MyWebFont' !important;
+								src: url('http://tech.thuanhai.com.vn/web/image/429?unique=e763030b5cd2cc5a8ed9662bf7e8aa496999dd4b');
+								}
+								.iportal{
+								font-family: MyWebFont !important;
+								font-size: 20px !important;
+								}
+								table.table-borderless &gt; tbody &gt; tr &gt; td{
+								padding: 3px !important;
+								}
+								table.table-bordered{
+								border:1px solid black !important;
+								table-layout: auto !important;
+								}
+								table.table-bordered &gt; thead &gt; tr &gt; th{
+								border:1px solid black !important;
+								padding: 10px !important;
+								}
+								table.table-bordered &gt; tbody &gt; tr &gt; td{
+								border:1px solid black !important;
+								padding: 10px !important;
+								}
+								footer{
+								font-family: MyWebFont !important;
+								font-size: large !important;
+								}
+								img{
+								padding: 5px !important;
+								}
+								.cont {
+								position: relative;
+								text-align: center;
+								color: white;
+								}
+								.text-block {
+								position: absolute;
+								top: 5px;
+								color: black;
+								padding-left: 5px;
+								}
+								footer{
+								font-family: MyWebFont !important;
+								font-size: large !important;
+								}
+
+							</style>
+						</xpath>
+						<div class="page">
+							<t t-foreach="docs" t-as="o">
+								<div class="container iportal">
+									<div class="col-12 ">
+										<div>
+											<table class="table table-bordered">
+												<tr>
+													<td rowspan="3" style="width:20%" class="align-middle text-center">
+														<img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 60px;" alt="Logo"/>
+													</td>
+													<td rowspan="3" style="width:45%;" class="align-middle text-center">
+														<h2 style="color:red;">
+															<b>THƯ MỜI NHẬN VIỆC</b>
+														</h2>
+													</td>
+													<td style="width:35%">
+														Mã hiệu: QT-NS-01/BM05
+													</td>
+												</tr>
+												<tr>
+													<td>Lần ban hành: 01</td>
+												</tr>
+												<tr>
+													<td>Ngày ban hành: 01/07/2021</td>
+												</tr>
+											</table>
+										</div>
+										<div class="text-right">
+											<t t-if="o.ngay_thumoi">
+												Tp. Hồ Chí Minh, ngày
+												<b>
+													<span t-esc="o.ngay_thumoi.strftime('%d')"/>
+												</b> tháng
+												<b>
+													<span t-esc="o.ngay_thumoi.strftime('%m')"/>
+												</b> năm
+												<b>
+													<span t-esc="o.ngay_thumoi.strftime('%Y')"/>
+												</b>
+											</t>
+											<t t-else="else">
+												Tp. Hồ Chí Minh, ngày      tháng      năm     
+											</t>
+										</div>
+										<div class="text-center">
+											<h3>
+												<br/>
+												<t t-if="o.gender=='male'">
+													<b>
+														<u>Kính gửi</u>: Anh <span t-esc="o.name"/>
+													</b>
+												</t>
+												<t t-if="o.gender=='female'">
+													<b>
+														<u>Kính gửi</u>: Chị <span t-esc="o.name"/>
+													</b>
+												</t>
+												<t t-if="o.gender=='other'">
+													<b>
+														<u>Kính gửi</u>: Anh/ Chị <span t-esc="o.name"/>
+													</b>
+												</t>
+												<br/>
+											</h3>
+										</div>
+										<div class="text-justify">
+											     Thay mặt Hội đồng tuyển dụng <span t-esc="o.company_id.ten_kyhopdong"/>, Phòng Hành chính – Nhân sự hân hạnh thông báo Anh/ Chị đã trúng tuyển vị trí tham gia dự tuyển vừa qua tại Công ty.
+											<br/>
+											     Theo kết quả phỏng vấn và nội dung thỏa thuận, Công ty trân trọng mời Anh/ Chị về cộng tác tại Công ty với các nội dung thỏa thuận như sau:
+										</div>
+										<div>
+											<b>I. Thông tin công việc</b>
+										</div>
+										<div>
+											<table class="table table-bordered iportal">
+												<tr>
+													<td>Ngày nhận việc</td>
+													<td>
+														<b>
+															08:00, ngày <span t-esc="o.thuviec_tu.strftime('%m/%d/%Y')"/>
+														</b>
+													</td>
+												</tr>
+												<tr>
+													<td>Vị trí</td>
+													<td>
+														<b>
+															<span t-esc="o.job_id.name"/>
+														</b>
+													</td>
+												</tr>
+												<tr>
+													<td>Đơn vị công tác</td>
+													<td>
+														<b>
+															<span t-esc="o.department_id.name"/>
+														</b>
+													</td>
+												</tr>
+												<tr>
+													<td>Địa điểm làm việc</td>
+													<td>
+														<b>
+															<span t-esc="o.address_id.name"/>
+														</b>
+													</td>
+												</tr>
+												<tr>
+													<td>Thời gian thử việc</td>
+													<td>
+														<b>
+															<span t-esc="o.tg_thuviec"/>
+															<t t-esc="dict(o.env['hr.applicant'].fields_get(allfields=['loai_tgthuviec'])['loai_tgthuviec']['selection'])[o.loai_tgthuviec]"/>
+															từ ngày <span t-esc="o.thuviec_tu.strftime('%m/%d/%Y')"/> đến <span t-esc="o.thuviec_den.strftime('%m/%d/%Y')"/>
+														</b>
+													</td>
+												</tr>
+											</table>
+										</div>
+										<div>
+											<b>II. Chính sách chế độ</b>
+										</div>
+										<div>
+											<table class="table table-bordered iportal">
+												<tr class="table-warning text-center">
+													<td style="width: 25%">
+														<b>Thu nhập</b>
+													</td>
+													<td style="width: 30%">
+														<b>Mức lương thỏa thuận</b>
+													</td>
+													<td style="width: 45%">
+														<b>Ghi chú</b>
+													</td>
+												</tr>
+												<tr>
+													<td>Thử việc</td>
+													<td class="text-center">
+														<b>
+															<span t-esc="o.luong_thuviec" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+														</b>
+													</td>
+													<td rowspan="2">
+														<i>Lương (gross) trước thuế Thu nhập cá nhân, các khoản Bảo hiểm, Công đoàn và khấu trừ khác theo quy định Pháp luật.</i>
+													</td>
+												</tr>
+												<tr>
+													<td>Chính thức</td>
+													<td class="text-center">
+														<b>
+															<span t-esc="o.luong_chinh" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+														</b>
+													</td>
+												</tr>
+											</table>
+										</div>
+										<div class="text-justify">
+											<ul>
+												<li>
+													Lương hàng tháng sẽ được thanh toán bằng hình thức chuyển khoản thông qua tài khoản do CBNV cung cấp tại Ngân hàng TMCP Ngoại Thương Việt Nam (Vietcombank).
+												</li>
+												<li>
+													Tiền ăn trưa (Công ty đài thọ) và các chế độ phụ cấp, trợ cấp, thưởng KPI, thưởng cuối năm… theo quy định và chính sách hiện hành của Công ty.
+												</li>
+												<li>
+													Theo quy định về bảo mật lương của Công ty, CBNV vui lòng không chia sẻ mức lương với bất kỳ đồng nghiệp nào bên trong cũng như bên ngoài. Mọi thắc mắc về lương và chính sách chế độ của Công ty, Chị vui lòng trao đổi với Phòng Hành chính – Nhân sự.
+												</li>
+											</ul>
+										</div>
+										<div>
+											<b>III.	Các quy định chung tại công ty</b>
+										</div>
+										<div class="text-justify">
+											<ul>
+												<li>
+													Anh/Chị vui lòng chuẩn bị đầy đủ bộ hồ sơ nhân viên (bao gồm lý lịch cá nhân, các bằng cấp/chứng chỉ giấy khám sức khỏe, hình thẻ 3x4… có chứng thực trong thời hạn tối đa 06 tháng) và gửi cho Bộ phận Tuyển dụng trước khi nhận việc. Hồ sơ đã nộp vào Công ty sẽ không được hoàn trả vì bất kỳ lý do gì.
+												</li>
+												<li>
+													Nộp Giấy xét nghiệm/tiêm phòng Covid an toàn, khi có yêu cầu phòng chống dịch bệnh
+												</li>
+												<li>
+													Trong tuần đầu tiên nhận việc tại Công ty, Anh/Chị sẽ được hướng dẫn hội nhập để nắm rõ các quy định cụ thể trong Chính sách nhân sự và các quy trình, quy định khác liên quan công việc.
+												</li>
+												<li>
+													Anh/ Chị vui lòng lưu ý các quy định sau đây khi bắt đầu nhận việc tại Công ty:
+												</li>
+											</ul>
+										</div>
+										<div class="text-justify">
+											<ol>
+												<li>
+													<b>Thời gian làm việc</b>
+													<dl>
+														<dt>
+															<b>a) Đối với khu vực Văn phòng:</b> 	Từ Thứ 2 đến hết sáng thứ 7
+														</dt>
+														<dd>
+															- Buổi sáng: 08:00 – 12:00 (nếu ăn sáng tại Canteen Cty không quá 8h15); Chiều: 13:00 – 17:00
+														</dd>
+														<dt>
+															<b>b) Đối với khu vực Kho hàng:</b> 	Từ Thứ 2 đến hết thứ 7
+														</dt>
+														<dd>
+															- Buổi sáng: 07:00 – 11:00; buổi chiều: 13:00 – 17:00
+														</dd>
+														<dt>
+															<b>c) Đối với khu vực nhà máy/xưởng sản xuất:</b> Theo tính chất công việc tại từng công trình
+														</dt>
+													</dl>
+												</li>												
+												<li>
+													<b>Nghỉ phép năm</b>
+													<table class="table table-bordered iportal">
+														<tr>
+															<td>Số ngày phép/ năm</td>
+															<td>
+																12 ngày/ năm <i>(tăng thêm 1 ngày/ năm, theo định kỳ 5 năm)</i>
+															</td>
+														</tr>
+														<tr>
+															<td>Thời gian nghỉ phép năm</td>
+															<td>CBNV đăng ký hoặc do Ban quản lý bố trí thời gian phù hợp</td>
+														</tr>
+													</table>
+												</li>												
+												<li>
+													<b>Chính sách lương &amp; chế độ đãi ngộ</b>
+													<ul>
+														<li>
+															Mức lương của từng nhân viên sẽ được xét duyệt lại sau thời gian thử việc và định kỳ 2 lần/năm (giữa và cuối năm). Các yếu tố sau đây sẽ được Hội đồng công ty xem xét khi duyệt lương:
+															<ul>
+																<li>Phạm vi, khối lượng công việc đảm nhiệm.</li>
+																<li>Đánh giá năng lực chuyên môn và hiệu quả hoàn thành công việc.</li>
+																<li>Mặt bằng thu nhập chung của khu vực.</li>
+															</ul>
+														</li>
+														<li>Phụ cấp thâm niên, thưởng KPI theo mục tiêu công việc đăng ký hàng quý, thưởng cuối năm theo hiệu quả công việc, lương tháng 13 và các chế độ đãi ngộ khác…: Theo chính sách quy định chung áp dụng trong toàn công ty. 	</li>
+													</ul>
+												</li>
+												<br/>
+												<li>
+													<b>Điều động/thuyên chuyển</b>
+													<ul>
+														<li>Nhằm nâng cao hiệu quả công việc và phát triển nguồn nhân lực, việc luân chuyển nhân viên qua các vị trí công tác, đơn vị khác nhau trong hệ thống Thuan Hai Corp…, là một chủ trương trong chính sách của Công ty để tạo cơ hội trải nghiệm, đào tạo và phát triển nguồn nhân lực.</li>
+														<li>Việc thuyên chuyển công tác có thể xuất phát từ nguyện vọng của nhân viên hoặc từ nhu cầu của Công ty. Tất cả các trường hợp thuyên chuyển đều nhằm định hướng giúp nhân sự nâng cao năng lực và phát triển nghề nghiệp, tạo điều kiện cho CBNV làm việc ổn định lâu dài.</li>
+													</ul>
+												</li>												
+												<li>
+													<b>Kỷ luật lao động</b>
+													<ul>
+														<li>Được duy trì thực hiện có tính xây dựng nhằm tạo ra một môi trường làm việc hợp tác, hiệu quả, dựa trên ý thức tự giác cao của mọi thành viên và không nhằm mục tiêu xử phạt.</li>
+														<li>Tuy nhiên những hành vi trái với nội quy, quy định công ty, làm tổn hại lợi ích và môi trường làm việc chung được xem là vi phạm nội quy của Công ty, sẽ được xử lý theo quy định.</li>
+													</ul>
+												</li>
+												<br/>
+												<li>
+													<b>Phúc lợi</b>
+													<ul>
+														<li>Bảo hiểm xã hội, Bảo hiểm y tế và Bảo hiểm thất nghiệp: Theo tỷ lệ quy định hiện hành trong từng thời kỳ của Nhà nước và Công ty.</li>
+														<li>CBNV được cấp thẻ bảo hiểm PVI sau khi ký hợp đồng lao động chính thức với chi phí do Công ty đài thọ và các chế độ hỗ trợ khác tại từng thời điểm.</li>
+													</ul>
+												</li>
+
+											</ol>
+										</div>
+										<div>
+											     Công ty tin tưởng rằng với chiến lược phát triển SXKD của <span t-esc="o.company_id.ten_kyhopdong"/>, Anh/Chị sẽ có nhiều cơ hội làm việc ổn dịnh và phát triển nghề nghiệp lâu dài, cùng với các thành viên xây dựng Công ty ngày càng vững mạnh.<br/>
+											     Thư mời này có giá trị tương đương như Hợp đồng thử việc và được lập thành 02 (hai) bản, mỗi bên giữ 01 (một) bản có giá trị như nhau đề cùng thực hiện. Anh/Chị vui lòng ký xác nhận vào cuối thư và gửi lại cho Phòng Hành chính – Nhân sự 01 (một) bản vào ngày đầu tiên nhận việc.<br/>
+											     Trường hợp cần hỗ trợ thêm bất kỳ thông tin gì, Chị vui lòng liên hệ với <b>Bộ phận Tuyển dụng – Phòng HCNS</b> theo số điện thoại <b>(028) 3622 6880</b>.<br/>
+											     Trân trọng cảm ơn và kính chúc Anh/Chị sẽ có một lộ trình nghề nghiệp mới đạt nhiều thành công cùng với <span t-esc="o.company_id.ten_kyhopdong"/>.<br/>
+										</div>
+										<br/>
+										<div>
+											<table class="table table-borderless text-center iportal">
+												<tr>
+													<td>
+														<b>Xác nhận của nhân viên</b>
+													</td>
+													<td style="text-transform:uppercase">
+														<b>
+															TM. <span t-esc="o.company_id.ten_kyhopdong"/>
+														</b>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<i>(Ký &amp; ghi rõ họ tên)</i>
+													</td>
+													<td>
+														<b>
+															<span t-esc="o.company_id.nguoi_kyhd_id.job_id.name"/>
+														</b>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<br/>
+														<br/>														
+														<br/>
+														<br/>
+													</td>
+													<td>
+														<br/>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<br/>
+													</td>
+													<td>
+														<b>
+															<span t-esc="o.company_id.nguoi_kyhd_id.name"/>
+														</b>
+
+													</td>
+												</tr>
+											</table>
+										</div>
+										<div>
+											<i class="fa fa-square-o"/>
+											<i>Tôi đã đọc kỹ và đồng ý với toàn bộ nội dung của Thư mời nhận việc.</i>
+										</div>
+									</div>
+								</div>
+							</t>
+						</div>
+						<div class="footer" style="font-family: 'Times New Roman', Times, serif; margin-top: 0.5em; margin-left: 1em; margin-right: 1em;">
+							<div style="padding-left: 0.5em; text-align: right">
+								Trang <span class="page"/> / <span class="topage"/>
+							</div>
+						</div>
+					</t>
+				</t>
+			</t>
+		</field>
+	</record>
+</odoo>

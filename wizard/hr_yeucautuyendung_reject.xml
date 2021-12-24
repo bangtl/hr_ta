@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!--Form View -->
+	<record model="ir.ui.view" id="hr_yeucautuyendung_tuchoi_form">
+		<field name="name">hr.yeucautuyendung.tuchoi.form</field>
+		<field name="model">hr.yeucautuyendung.tuchoi</field>
+		<field name="arch" type="xml">
+			<form string="Từ chối">
+					<group>
+						<field name="lydo"/>						
+					</group>					
+					<footer>
+						<button name="xacnhan" string="Xác nhận" type="object" class="btn-primary"/>
+						<button string="Hủy" class="btn-secondary" special="cancel"/>
+					</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="hr_yeucautuyendung_tuchoi_act" model="ir.actions.act_window">
+		<field name="name">Từ chối</field>
+		<field name="res_model">hr.yeucautuyendung.tuchoi</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="hr_yeucautuyendung_tuchoi_form"/>
+		<field name="target">new</field>
+	</record>
+
+	<record id="th_inherit_tuchoi_hr_yeucautuyendung_form" model="ir.ui.view">
+		<field name="name">hr.yeucautuyendung.tuchoi.form</field>
+		<field name="model">hr.yeucautuyendung</field>
+		<field name="priority">31</field>
+		<field name="inherit_id" ref="hr_ta.hr_yeucautuyendung_form"/>
+		<field name="arch" type="xml">
+			<button name="bod_approve" position="after">
+				<button name="%(hr_ta.hr_yeucautuyendung_tuchoi_act)d" string="Từ chối" type="action" class="btn btn-danger btn-sm" attrs="{'invisible' : [('stage_id', 'in', [%(yeucautuyendung_stage_1)d,%(yeucautuyendung_stage_5)d,%(yeucautuyendung_stage_6)d])]}"/>
+			</button>
+		</field>
+	</record>	
+</odoo>

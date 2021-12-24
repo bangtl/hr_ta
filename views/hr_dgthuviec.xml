@@ -1,0 +1,626 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Stage Tree View -->
+    <record model="ir.ui.view" id="hr_dgthuviec_stage_tree">
+        <field name="name">hr.dgthuviec.stage.tree</field>
+        <field name="model">hr.dgthuviec.stage</field>
+        <field name="arch" type="xml">
+            <tree string="Stages" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+	<!-- Phê duyệt cuối Tree View -->
+	<record model="ir.ui.view" id="hr_dgthuviec_pheduyetcuoi_tree">
+		<field name="name">hr.dgthuviec.pheduyetcuoi.tree</field>
+		<field name="model">hr.dgthuviec.pheduyetcuoi</field>
+		<field name="arch" type="xml">
+			<tree string="Stages" editable="bottom" sample="1">
+				<field name="sequence" widget="handle"/>
+				<field name="name"/>
+				<field name="company_id"/>
+				<field name="user_id"/>
+				<field name="active"/>
+				<field name="default"/>
+			</tree>
+		</field>
+	</record>
+
+	<!-- Kế hoạch thử việc -->
+	<record model="ir.ui.view" id="hr_khthuviec_tree">
+		<field name="name">hr.khthuviec.tree</field>
+		<field name="model">hr.khthuviec</field>
+		<field name="arch" type="xml">
+			<tree string="Kế hoạch thử việc" create="false" sample="1" decoration-info="stage_id==%(hr_ta.khthuviec_stage_1)d" decoration-warning="stage_id==%(hr_ta.khthuviec_stage_2)d or stage_id==%(hr_ta.khthuviec_stage_3)d or stage_id==%(hr_ta.khthuviec_stage_4)d" decoration-success="stage_id==%(hr_ta.khthuviec_stage_5)d" decoration-danger="stage_id==%(hr_ta.khthuviec_stage_6)d">
+				<field name="employee_id"/>
+				<field name="job_id"/>
+				<field name="company_id"/>
+				<field name="department_id"/>
+				<field name="batdau_thuviec"/>
+				<field name="ketthuc_thuviec"/>
+				<field name="user_id" readonly="1"/>
+				<field name="stage_id" decoration-info="stage_id==%(hr_ta.khthuviec_stage_1)d" decoration-warning="stage_id==%(hr_ta.khthuviec_stage_2)d or stage_id==%(hr_ta.khthuviec_stage_3)d or stage_id==%(hr_ta.khthuviec_stage_4)d" decoration-success="stage_id==%(hr_ta.khthuviec_stage_5)d" decoration-danger="stage_id==%(hr_ta.khthuviec_stage_6)d" widget="badge"/>
+			</tree>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="hr_khthuviec_form">
+		<field name="name">hr.khthuviec.form</field>
+		<field name="model">hr.khthuviec</field>
+		<field name="arch" type="xml">
+			<form string="Đánh giá thử việc" create="false">
+				<field name="active" invisible="1"/>
+				<field name="giaoviec_xong" invisible="1"/>
+				<field name="thuviec_xong" invisible="1"/>
+				<header>
+					<button string="Lập KH công việc xong" name="giaoviec" type="object" class="btn btn-success btn-sm" attrs="{'invisible': ['|',('active', '=', False),('stage_id', '!=', %(hr_ta.khthuviec_stage_1)d)]}"/>
+					<button string="Hoàn thành" name="thuviec" type="object" class="btn btn-success btn-sm" attrs="{'invisible': ['|',('active', '=', False),('stage_id', '!=', %(hr_ta.khthuviec_stage_2)d)]}"/>					
+					<button string="Phê duyệt" name="qltructiep" type="object" class="btn btn-success btn-sm" attrs="{'invisible': ['|',('active', '=', False),('stage_id', '!=', %(hr_ta.khthuviec_stage_3)d)]}"/>
+					<button string="Phê duyệt" name="qlphongban" type="object" class="btn btn-success btn-sm" attrs="{'invisible': ['|',('active', '=', False),('stage_id', '!=', %(hr_ta.khthuviec_stage_4)d)]}"/>
+					<button string="Hủy" name="huy" invisible="1" type="object" class="btn btn-danger btn-sm" attrs="{'invisible': ['|',('active', '=', False),('stage_id', '!=', %(hr_ta.khthuviec_stage_1)d)]}"/>
+					<field name="stage_id" widget="statusbar"/>
+				</header>
+				<sheet>					
+					<group>
+						<group>
+							<field name="employee_id" readonly="1"/>
+							<field name="job_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+							<field name="department_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+							<field name="company_id"/>							
+						</group>
+						<group>
+							<field name="user_id" readonly="1"/>
+							<field name="batdau_thuviec" readonly="1"/>
+							<field name="ketthuc_thuviec" readonly="1"/>
+						</group>
+					</group>
+					<notebook>
+						<page name="khcongviec" string="Công việc">
+							<h2>Kế hoạch công việc</h2>
+							<field name="kh_congviec_ids">
+								<tree string="Kế hoạch công việc" editable="bottom" sample="1">
+									<field name="name"/>
+									<field name="description"/>
+									<field name="tungay"/>
+									<field name="denngay"/>
+									<field name="nguoi_hotro_id"/>
+								</tree>
+							</field>
+							<div attrs="{'invisible': [('giaoviec_xong', '=', False)]}">
+								<h2>Thực hiện công việc</h2>
+								<button name="copy_kh_congviec" invisible="1" string="Lấy công việc từ Kế hoạch" type="object" class="btn btn-success btn-sm" confirm='Bạn có chắc muốn thực hiện?'/>
+								<field name="cv_thucte_ids">
+									<tree string="Công việc thực tế" editable="bottom" sample="1">
+										<field name="loai"/>
+										<field name="name" attrs="{'readonly': [('loai', '=', 'theokh')]}"/>
+										<field name="description" attrs="{'readonly': [('loai', '=', 'theokh')]}"/>
+										<field name="tungay" attrs="{'readonly': [('loai', '=', 'theokh')]}"/>
+										<field name="denngay" attrs="{'readonly': [('loai', '=', 'theokh')]}"/>
+										<field name="nguoi_hotro_id" attrs="{'readonly': [('loai', '=', 'theokh')]}"/>
+										<field name="khthuviec_stage_id"/>
+										<field name="ketqua"/>										
+										<field name="danhgia" attrs="{'readonly': [('khthuviec_stage_id', '!=', %(hr_ta.khthuviec_stage_3)d)]}"/>
+										<field name="ghichu"/>
+									</tree>
+								</field>
+							</div>
+						</page>						
+					</notebook>
+				</sheet>
+				<div class="oe_chatter">
+					<field name="message_follower_ids"/>
+					<field name="activity_ids"/>
+					<field name="message_ids" options="{'open_attachments': True}"/>
+				</div>
+			</form>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="hr_khthuviec_kanban">
+		<field name="name">hr.khthuviec.kanban</field>
+		<field name="model">hr.khthuviec</field>
+		<field name="arch" type="xml">
+			<kanban default_group_by="stage_id" sample="1" records_draggable="false" class="o_kanban_small_column o_kanban_project_tasks">
+				<field name="stage_id" options='{"group_by_tooltip": {"requirements": "Requirements"}}'/>
+				<field name="employee_id"/>
+				<field name="description"/>
+				<field name="color"/>
+				<field name="active"/>
+				<field name="batdau_thuviec"/>
+				<field name="ketthuc_thuviec"/>			
+				<templates>
+					<t t-name="kanban-box">
+						<div t-attf-class="{{'oe_kanban_color_' + kanban_getcolor(record.color.raw_value)}} oe_kanban_card oe_kanban_global_click">
+							<div class="oe_kanban_content">
+								<div class="o_kanban_record_top">
+									<div class="o_kanban_record_headings">
+										<strong class="o_kanban_record_title text-uppercase">
+											<field name="employee_id"/>
+										</strong>
+									</div>
+									<div class="o_dropdown_kanban dropdown" t-if="!selection_mode" groups="base.group_user">
+										<a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+											<span class="fa fa-ellipsis-v"/>
+										</a>
+										<div class="dropdown-menu" role="menu">
+											<a t-if="widget.editable" role="menuitem" type="edit" class="dropdown-item">Edit</a>
+											<a t-if="widget.editable" role="menuitem" class="dropdown-item" name="toggle_active" type="object">
+												<t t-if="record.active.raw_value">Archive</t>
+												<t t-if="!record.active.raw_value">Restore</t>
+											</a>
+											<a t-if="widget.deletable" role="menuitem" type="delete" class="dropdown-item">Delete</a>
+											<div role="separator" class="dropdown-divider"/>
+											<ul class="oe_kanban_colorpicker" data-field="color"/>
+										</div>
+									</div>
+								</div>
+								<div class="o_kanban_record_body">
+									<small class="o_kanban_record_subtitle text-muted">
+										<t t-if="record.job_id.raw_value">
+											<span>
+												Chức danh: <span class="badge badge-pill badge-info">
+													<field name="job_id"/>
+												</span><br/>
+											</span>
+										</t>
+										<t t-if="record.department_id.raw_value">
+											<span>
+												Phòng/ Ban: <span class="badge badge-pill badge-info">
+													<field name="department_id"/>
+												</span><br/>
+											</span>
+										</t>
+										<t t-if="record.company_id.raw_value">
+											<span>
+												Công ty: <span class="badge badge-pill badge-info">
+													<field name="company_id"/>
+												</span><br/>
+											</span>
+										</t>
+										<t t-if="record.batdau_thuviec">
+											<span>
+												Ngày bắt đầu thử việc: <span class="badge badge-pill badge-warning">
+													<field name="batdau_thuviec"/>
+												</span><br/>
+											</span>
+										</t>
+										<t t-if="record.ngaykt_thuviec">
+											<span>
+												Ngày kết thúc thử việc: <span class="badge badge-pill badge-warning">
+													<field name="ketthuc_thuviec"/>
+												</span><br/>
+											</span>
+										</t>
+									</small>
+								</div>
+								<div class="o_kanban_record_bottom" t-if="!selection_mode">
+									<div class="oe_kanban_bottom_left">
+										<field name="ketthuc_thuviec" widget="remaining_days"/>
+									</div>
+									<div class="oe_kanban_bottom_right" t-if="!selection_mode">
+										<field name="user_id" widget="many2one_avatar_user"/>
+									</div>
+								</div>
+							</div>
+							<div class="oe_clear"/>
+						</div>
+					</t>
+				</templates>
+			</kanban>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="hr_khthuviec_search">
+		<field name="name">hr.khthuviec.view.search</field>
+		<field name="model">hr.khthuviec</field>
+		<field name="arch" type="xml">
+			<search string="Search Kế hoạch thử việc">
+				<field name="job_id"/>
+				<field name="department_id" operator="child_of"/>
+				<field name="stage_id" domain="[]"/>
+				<filter string="Cần xử lý" name="canxuly" domain="[('stage_id', 'not in', [%(khthuviec_stage_5)d,%(khthuviec_stage_6)d])]"/>
+				<filter string="Đã lưu trữ" name="inactive" domain="[('active', '=', False)]"/>
+				<separator/>
+				<group expand="0" string="Group By">
+					<filter string="Job" name="job" domain="[]" context="{'group_by': 'job_id'}"/>
+					<filter string="Stage" name="stage" domain="[]" context="{'group_by': 'stage_id'}"/>
+					<filter string="Department" name="department" domain="[]" context="{'group_by': 'department_id'}"/>
+				</group>
+				<searchpanel>
+					<field name="company_id" enable_counters="1"/>
+					<field name="department_id" enable_counters="1"/>
+				</searchpanel>
+			</search>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="hr_khthuviec_pivot">
+		<field name="name">hr.khthuviec.pivot</field>
+		<field name="model">hr.khthuviec</field>
+		<field name="arch" type="xml">
+			<pivot string="Dánh giá ứng viên">
+				<field name="department_id" type="row"/>
+				<field name="stage_id" type="col"/>
+			</pivot>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="hr_khthuviec_calendar">
+		<field name="name">hr.khthuviec.calendar</field>
+		<field name="model">hr.khthuviec</field>
+		<field name="arch" type="xml">
+			<calendar date_start="batdau_thuviec" date_stop="ketthuc_thuviec" color="employee_id"  mode="month" quick_add="False" event_open_popup="False">
+				<field name="stage_id" filters="1"/>
+				<field name="employee_id"/>
+				<field name="job_id"/>
+				<field name="company_id" filters="1"/>
+				<field name="department_id" filters="1"/>
+				<field name="user_id"/>
+				<field name="batdau_thuviec"/>
+				<field name="ketthuc_thuviec"/>
+			</calendar>
+		</field>
+	</record>
+	
+	<!-- Đánh giá thử việc -->
+    <record model="ir.ui.view" id="hr_dgthuviec_tree">
+        <field name="name">hr.dgthuviec.tree</field>
+        <field name="model">hr.dgthuviec</field>
+        <field name="arch" type="xml">
+            <tree string="Đánh giá tuyển dụng" create="false" sample="1" decoration-info="stage_id==%(hr_ta.dgthuviec_stage_1)d" decoration-warning="stage_id==%(hr_ta.dgthuviec_stage_2)d or stage_id==%(hr_ta.dgthuviec_stage_3)d or stage_id==%(hr_ta.dgthuviec_stage_4)d" decoration-success="stage_id==%(hr_ta.dgthuviec_stage_5)d" decoration-danger="stage_id==%(hr_ta.dgthuviec_stage_6)d">
+                <field name="employee_id"/>
+				<field name="job_id"/>
+				<field name="department_id" optional="hide"/>
+				<field name="department_name"/>
+				<field name="company_id"/>
+				<field name="user_id" readonly="1"/>
+				<field name="stage_id" decoration-info="stage_id==%(hr_ta.dgthuviec_stage_1)d" decoration-warning="stage_id==%(hr_ta.dgthuviec_stage_2)d or stage_id==%(hr_ta.dgthuviec_stage_3)d or stage_id==%(hr_ta.dgthuviec_stage_4)d" decoration-success="stage_id==%(hr_ta.dgthuviec_stage_5)d" decoration-danger="stage_id==%(hr_ta.dgthuviec_stage_6)d" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_dgthuviec_form">
+        <field name="name">hr.dgthuviec.form</field>
+        <field name="model">hr.dgthuviec</field>
+        <field name="arch" type="xml">
+            <form string="Đánh giá thử việc" create="false">
+				<field name="active" invisible="1"/>				
+				<field name="nsdg_xong" invisible="1"/>
+				<field name="qldg_xong" invisible="1"/>
+				<field name="tpdg_xong" invisible="1"/>
+				<field name="is_self" invisible="1"/>
+				<field name="tudanhgia" invisible="1"/>
+                <header>					
+					<button string="Đánh giá xong" name="nsdg" type="object" class="btn btn-success btn-sm" attrs="{'invisible': ['|','|','|',('active', '=', False),('stage_id', '!=', %(hr_ta.dgthuviec_stage_1)d),('nsdg_xong', '=', True),('is_self','!=',True)]}"/>
+					<button string="Phê duyệt" name="qldg" type="object" class="btn btn-success btn-sm" attrs="{'invisible': ['|','|','|','|',('active', '=', False),('stage_id', '!=', %(hr_ta.dgthuviec_stage_2)d),('nsdg_xong', '=', False), ('qldg_xong', '=', True),('is_self','!=',True)]}"/>
+					<button string="Phê duyệt" name="tpdg" type="object" class="btn btn-success btn-sm" attrs="{'invisible': ['|','|','|','|','|',('active', '=', False),('stage_id', '!=', %(hr_ta.dgthuviec_stage_3)d),('nsdg_xong', '=', False), ('qldg_xong', '=', False), ('tpdg_xong', '=', True),('is_self','!=',True)]}"/>
+					<button string="Phê duyệt" name="approve" type="object" class="btn btn-success btn-sm" attrs="{'invisible': ['|','|','|','|','|',('active', '=', False),('stage_id', '!=', %(hr_ta.dgthuviec_stage_4)d),('nsdg_xong', '=', False),('qldg_xong', '=', False),('tpdg_xong', '=', False),('is_self','!=',True)]}"/>
+					<button string="Hủy" name="cancel" invisible="1" type="object" class="btn btn-danger btn-sm" attrs="{'invisible': ['|','|',('active', '=', False),('stage_id', '!=', %(hr_ta.dgthuviec_stage_1)d),('is_self','!=',True)]}"/>
+					<button string="Send mail" name="send_email_danhgia" type="object" invisible="1" class="oe_highlight"/>
+					<field name="stage_id" widget="statusbar"/>
+                </header>
+                <sheet>
+					<div class="oe_title pr-0">
+						<field name="name" invisible="1"/>
+						<label for="employee_id"/>
+						<h1>
+							<field name="employee_id" readonly="1"/>
+						</h1>						
+					</div>
+					<group>
+						<group>
+							<field name="job_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+							<field name="department_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+							<field name="company_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+							<field name="user_id" readonly="1"/>
+							<field name="pheduyetcuoi_id" readonly="1"/>
+						</group>
+						<group>							
+							<field name="ngaykt_thuviec" readonly="1"/>
+							<field name="luong_thuviec" readonly="1" invisible="1"/>
+							<field name="luong_chinh" readonly="1" invisible="1"/>
+						</group>
+					</group>
+					<notebook>				
+						<page name="nstudanhgia" string="Nhân sự tự đánh giá" attrs="{'invisible': [('tudanhgia', '=', False)]}">
+							<group string="VỀ QUY ĐỊNH, QUY TRÌNH VÀ CHÍNH SÁCH LÀM VIỆC TẠI CÔNG TY">
+								<group>
+									<field name="cacquydinh" attrs="{'readonly': [('nsdg_xong', '=', True)], 'required': [('tudanhgia', '=', True)]}"/>
+									<field name="lydo_cacquydinh" string="Lý do" attrs="{'readonly': [('nsdg_xong', '=', True)], 'required': [('tudanhgia', '=', True)]}"/>
+								</group>								
+							</group>
+							<group>
+								<group string="MÔI TRƯỜNG LÀM VIỆC">
+									<field name="moitruong_lvchung" string="Chung" attrs="{'readonly': [('nsdg_xong', '=', True)], 'required': [('tudanhgia', '=', True)]}"/>
+									<field name="lydo_moitruong_lvchung" string="Lý do" attrs="{'readonly': [('nsdg_xong', '=', True)], 'required': [('tudanhgia', '=', True)]}"/>
+									<field name="moitruong_lvrieng" string="Phòng/ Ban" attrs="{'readonly': [('nsdg_xong', '=', True)], 'required': [('tudanhgia', '=', True)]}"/>
+									<field name="lydo_moitruong_lvrieng" string="Lý do" attrs="{'readonly': [('nsdg_xong', '=', True)], 'required': [('tudanhgia', '=', True)]}"/>
+								</group>
+								<group string="QUY TRÌNH THỰC HIỆN CÔNG VIỆC">
+									<field name="qt_cvchung" string="Chung" attrs="{'readonly': [('nsdg_xong', '=', True)], 'required': [('tudanhgia', '=', True)]}"/>
+									<field name="lydo_qt_cvchung" string="Lý do" attrs="{'readonly': [('nsdg_xong', '=', True)], 'required': [('tudanhgia', '=', True)]}"/>
+									<field name="qt_cvrieng" string="Phòng/ Ban" attrs="{'readonly': [('nsdg_xong', '=', True)], 'required': [('tudanhgia', '=', True)]}"/>
+									<field name="lydo_qt_cvrieng" string="Lý do" attrs="{'readonly': [('nsdg_xong', '=', True)], 'required': [('tudanhgia', '=', True)]}"/>
+								</group>
+							</group>
+							<group>
+								<group string="TRÁCH NHIỆM ĐƯỢC GIAO">
+									<div class="o_row">
+										<field name="trachnhiem_ids" attrs="{'readonly': [('nsdg_xong', '=', True)]}">
+											<tree string="Trách nhiệm được giao" editable="bottom" sample="1">
+												<field name="name"/>
+												<field name="loai"/>
+											</tree>
+										</field>
+									</div>
+								</group>
+								<group string="QUYỀN HẠN">
+									<div class="o_row">
+										<field name="quyenhan_ids" attrs="{'readonly': [('nsdg_xong', '=', True)]}">
+											<tree string="Quyền hạn" editable="bottom" sample="1">
+												<field name="name"/>
+												<field name="loai"/>
+											</tree>
+										</field>
+									</div>									
+								</group>
+							</group>							
+							<group string="Ý KIẾN/ ĐỀ XUẤT">
+								<group>
+									<field name="ykien_dexuat" attrs="{'readonly': [('nsdg_xong', '=', True)], 'required': [('tudanhgia', '=', True)]}"/>									
+								</group>
+								<group>
+									<field name="luachon" attrs="{'readonly': [('nsdg_xong', '=', True)], 'required': [('tudanhgia', '=', True)]}"/>
+									<field name="lydo_luachon" string="Lý do" attrs="{'invisible': ['|',('luachon', '=', False),('luachon', '=', 'dongy')], 'required' : [('luachon', '=', 'khongdongy')], 'readonly': [('nsdg_xong', '=', True)]}"/>
+								</group>
+							</group>
+						</page>
+						<page name="phongbandanhgia" string="Phòng/ Ban đánh giá" attrs="{'invisible': ['|',('active', '=', False),('nsdg_xong', '=', False)]}">
+							<div invisible="1">
+								<h2>Công việc hiện tại đang thực hiện</h2>
+								<field name="cvthuchien_ids" attrs="{'readonly': [('qldg_xong', '=', True)]}">
+									<tree string="Công việc thực hiện" editable="bottom" sample="1">
+										<field name="name"/>
+										<field name="loai"/>
+									</tree>
+								</field>
+							</div>
+							<div>
+								<h2>Nhận xét, đánh giá theo 3 tiêu chí chính: Kiến thức, kỹ năng, thái độ</h2>
+								<button name="load_skill" string="Lấy tiêu chí" type="object" class="btn btn-success btn-sm" confirm='Bạn có chắc muốn thực hiện?'/>
+								<field name="skill_ids" attrs="{'readonly': [('qldg_xong', '=', True)]}">
+									<tree string="Đánh giá" editable="bottom" sample="1">
+										<field name="skill_type_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+										<field name="skill_id" domain="[('skill_type_id', '=', skill_type_id)]" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+										<field name="danhgia_id" domain="[('skill_type_id', '=', skill_type_id),('active', '=', True)]" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
+										<field name="ghichu"/>
+									</tree>
+								</field>
+							</div>													
+							<group string="Phòng/ Ban đề xuất">
+								<group>
+									<field name="qltructiep_denghi" string="Đề nghị" attrs="{'required': [('nsdg_xong','=', True)], 'readonly': [('qldg_xong', '=', True)]}"/>
+									<field name="ngay_thoiviec" attrs="{'invisible': ['|',('qltructiep_denghi','=', False),('qltructiep_denghi','!=', 'chothoiviec')], 'required': [('qltructiep_denghi','=', 'chothoiviec')],'readonly': [('qldg_xong', '=', True)]}"/>
+									<field name="ngay_kyhd" attrs="{'invisible': ['|',('qltructiep_denghi','=', False),('qltructiep_denghi','=', 'chothoiviec')], 'required': ['|',('qltructiep_denghi','=', 'kyhd'),('qltructiep_denghi','=', 'thuyenchuyen')], 'readonly': [('qldg_xong', '=', True)]}"/>
+									<field name="phongban_thuyenchuyen_id" attrs="{'invisible': ['|',('qltructiep_denghi','=', False),('qltructiep_denghi','!=', 'thuyenchuyen')], 'required': [('qltructiep_denghi','=', 'thuyenchuyen')], 'readonly': [('qldg_xong', '=', True)]}"/>
+									<field name="vitri_thuyenchuyen_id"  attrs="{'invisible': ['|',('qltructiep_denghi','=', False),('qltructiep_denghi','!=', 'thuyenchuyen')], 'required': [('qltructiep_denghi','=', 'thuyenchuyen')], 'readonly': [('qldg_xong', '=', True)]}"/>
+								</group>
+								<group>									
+									<field name="currency_id" invisible="1"/>
+									<field name="luong_chinh_pd" attrs="{'invisible': ['|',('qltructiep_denghi','=', False),('qltructiep_denghi','=', 'chothoiviec')], 'required': ['|',('qltructiep_denghi','=', 'kyhd'),('qltructiep_denghi','=', 'thuyenchuyen')], 'readonly': [('tpdg_xong', '=', True)]}"/>
+									<field name="luong_hd_pd" invisible="1"/>									
+								</group>								
+							</group>							
+						</page>										
+					</notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'open_attachments': True}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_dgthuviec_kanban">
+        <field name="name">hr.dgthuviec.kanban</field>
+        <field name="model">hr.dgthuviec</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" sample="1" records_draggable="false" class="o_kanban_small_column o_kanban_project_tasks">
+                <field name="stage_id" options='{"group_by_tooltip": {"requirements": "Requirements"}}'/>
+                <field name="employee_id"/>
+                <field name="description"/>
+				<field name="color"/>
+				<field name="active"/>
+				<field name="ngaykt_thuviec"/>
+                <templates>
+                    <t t-name="kanban-box">
+						<div t-attf-class="{{'oe_kanban_color_' + kanban_getcolor(record.color.raw_value)}} oe_kanban_card oe_kanban_global_click">
+							<div class="oe_kanban_content">
+								<div class="o_kanban_record_top">
+									<div class="o_kanban_record_headings">
+										<strong class="o_kanban_record_title text-uppercase">
+											<field name="employee_id"/>
+										</strong>							
+									</div>
+									<div class="o_dropdown_kanban dropdown" t-if="!selection_mode" groups="base.group_user">
+										<a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+											<span class="fa fa-ellipsis-v"/>
+										</a>
+										<div class="dropdown-menu" role="menu">	
+											<a t-if="widget.editable" role="menuitem" type="edit" class="dropdown-item">Edit</a>
+											<a t-if="widget.editable" role="menuitem" class="dropdown-item" name="toggle_active" type="object">
+												<t t-if="record.active.raw_value">Archive</t>
+												<t t-if="!record.active.raw_value">Restore</t>
+											</a>
+											<a t-if="widget.deletable" role="menuitem" type="delete" class="dropdown-item">Delete</a>
+											<div role="separator" class="dropdown-divider"/>
+											<ul class="oe_kanban_colorpicker" data-field="color"/>
+										</div>
+									</div>
+								</div>
+								<div class="o_kanban_record_body">
+									<small class="o_kanban_record_subtitle text-muted">
+										<t t-if="record.job_id.raw_value">
+											<span>
+												Chức danh: <span class="badge badge-pill badge-info">
+													<field name="job_id"/>
+												</span><br/>
+											</span>
+										</t>
+										<t t-if="record.department_id.raw_value">
+											<span>
+												Phòng/ Ban: <span class="badge badge-pill badge-info">
+													<field name="department_id"/>
+												</span><br/>
+											</span>
+										</t>
+										<t t-if="record.company_id">
+											<span>
+												Công ty: <span class="badge badge-pill badge-info">
+													<field name="company_id"/>
+												</span><br/>
+											</span>
+										</t>
+										<t t-if="record.ngaykt_thuviec">
+											<span>
+												Ngày kết thúc thử việc: <span class="badge badge-pill badge-warning">
+													<field name="ngaykt_thuviec"/>
+												</span><br/>
+											</span>
+										</t>
+									</small>
+								</div>
+								<div class="o_kanban_record_bottom" t-if="!selection_mode">
+									<div class="oe_kanban_bottom_left">
+										<field name="ngaykt_thuviec" widget="remaining_days"/>										
+									</div>
+									<div class="oe_kanban_bottom_right" t-if="!selection_mode">										
+										<field name="user_id" widget="many2one_avatar_user"/>
+									</div>
+								</div>
+							</div>
+							<div class="oe_clear"/>
+						</div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+	<record model="ir.ui.view" id="hr_dgthuviec_search">
+		<field name="name">hr.dgthuviec.view.search</field>
+		<field name="model">hr.dgthuviec</field>
+		<field name="arch" type="xml">
+			<search string="Search Đánh giá thử việc">				
+				<field name="job_id"/>
+				<field name="department_id" operator="child_of"/>				
+				<field name="stage_id" domain="[]"/>
+				<filter string="Cần xử lý" name="canxuly" domain="[('stage_id', 'not in', [%(dgthuviec_stage_5)d,%(dgthuviec_stage_6)d])]"/>
+				<filter string="Đã lưu trữ" name="inactive" domain="[('active', '=', False)]"/>
+				<separator/>				
+				<group expand="0" string="Group By">					
+					<filter string="Job" name="job" domain="[]" context="{'group_by': 'job_id'}"/>					
+					<filter string="Stage" name="stage" domain="[]" context="{'group_by': 'stage_id'}"/>
+					<filter string="Department" name="department" domain="[]" context="{'group_by': 'department_id'}"/>
+				</group>
+				<searchpanel>
+					<field name="company_id" enable_counters="1"/>
+					<field name="department_id" enable_counters="1"/>
+					<field name="stage_id" enable_counters="1"/>
+				</searchpanel>
+			</search>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="hr_dgthuviec_pivot">
+		<field name="name">hr.dgthuviec.pivot</field>
+		<field name="model">hr.dgthuviec</field>
+		<field name="arch" type="xml">
+			<pivot string="Dánh giá thử việc">
+				<field name="department_id" type="row"/>
+				<field name="stage_id" type="col"/>
+			</pivot>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="hr_dgthuviec_calendar">
+		<field name="name">hr.dgthuviec.calendar</field>
+		<field name="model">hr.dgthuviec</field>
+		<field name="arch" type="xml">
+			<calendar date_start="ngaykt_thuviec" color="job_id"  mode="month" quick_add="False" event_open_popup="True">
+				<field name="stage_id" filters="1"/>
+				<field name="employee_id"/>
+				<field name="job_id"/>
+				<field name="company_id" filters="1"/>
+				<field name="department_id" filters="1"/>
+				<field name="user_id"/>
+				<field name="ngaykt_thuviec"/>
+			</calendar>
+		</field>
+	</record>
+    <!-- ACTION-->
+
+    <record id="hr_dgthuviec_stage_act" model="ir.actions.act_window">
+        <field name="name">Đánh giá thử việc (Stages)</field>
+        <field name="res_model">hr.dgthuviec.stage</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="hr_dgthuviec_stage_tree"/>
+    </record>
+	<record id="hr_dgthuviec_pheduyetcuoi_act" model="ir.actions.act_window">
+		<field name="name">Đánh giá thử việc phê duyệt cuối</field>
+		<field name="res_model">hr.dgthuviec.pheduyetcuoi</field>
+		<field name="view_mode">tree,form</field>
+		<field name="view_id" ref="hr_dgthuviec_pheduyetcuoi_tree"/>
+	</record>
+	<record model="ir.actions.act_window" id="hr_khthuviec_act">
+		<field name="name">Kế hoạch thử việc</field>
+		<field name="res_model">hr.khthuviec</field>
+		<field name="view_mode">tree,kanban,form,pivot,calendar,activity</field>
+		<field name="view_id" eval="hr_khthuviec_tree"/>
+		<field name="context">{'search_default_canxuly': 1}</field>
+	</record>
+	<record model="ir.actions.act_window" id="hr_khthuviec_employee_act">
+		<field name="name">Kế hoạch thử việc</field>
+		<field name="res_model">hr.khthuviec</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('employee_id', '=', active_id)]</field>
+		<field name="view_id" eval="hr_khthuviec_tree"/>
+	</record>
+    <record model="ir.actions.act_window" id="hr_dgthuviec_act">
+        <field name="name">Đánh giá thử việc</field>
+        <field name="res_model">hr.dgthuviec</field>
+        <field name="view_mode">tree,kanban,form,pivot,calendar,activity</field>
+        <field name="view_id" eval="hr_dgthuviec_tree"/>
+		<field name="context">{'search_default_canxuly': 1}</field>
+    </record>
+	<record model="ir.actions.act_window" id="hr_dgthuviec_employee_act">
+		<field name="name">Đánh giá thử việc</field>
+		<field name="res_model">hr.dgthuviec</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('employee_id', '=', active_id)]</field>
+		<field name="view_id" eval="hr_dgthuviec_tree"/>
+	</record>
+
+	<record id="kh_dg_thuviec_hr_employee_form" model="ir.ui.view">
+		<field name="name">kh.dg.thuviec.hr.employee.form</field>
+		<field name="model">hr.employee</field>
+		<field name="priority">31</field>
+		<field name="inherit_id" ref="hr.view_employee_form"/>
+		<field name="arch" type="xml">
+			<div name="button_box" position="inside">
+				<button name="%(hr_ta.hr_khthuviec_employee_act)d" type="action" invisible="1" class="oe_stat_button" icon="fa-list-alt">
+					<field string="Kế hoạch thử việc" name="khthuviec_count" widget="statinfo"/>
+				</button>
+				<button name="%(hr_ta.hr_dgthuviec_employee_act)d" type="action" class="oe_stat_button" icon="fa-pencil-square-o">
+					<field string="Đánh giá thử việc" name="dgthuviec_count" widget="statinfo"/>
+				</button>
+			</div>
+		</field>
+	</record>
+	
+    <!-- Menu -->
+
+    <menuitem id="menu_hr_dgthuviec_stage" name="Đánh giá thử việc (Stages)" parent="hr_recruitment.menu_hr_recruitment_configuration" action="hr_dgthuviec_stage_act" groups="base.group_no_one" sequence="10"/>
+	<menuitem id="menu_hr_dgthuviec_pheduyetcuoi" name="DGTV Phê duyệt cuối" parent="hr_recruitment.menu_hr_recruitment_configuration" action="hr_dgthuviec_pheduyetcuoi_act" groups="base.group_no_one" sequence="10"/>
+	<menuitem name="Kế hoạch thử việc" parent="menu_hr_dg_tuyendung" id="menu_hr_khthuviec" action="hr_khthuviec_act" sequence="4"/>
+	<menuitem name="Đánh giá thử việc" parent="menu_hr_dg_tuyendung" id="menu_hr_dgthuviec" action="hr_dgthuviec_act" sequence="5"/>
+</odoo>

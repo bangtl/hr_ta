@@ -23,9 +23,9 @@
 						<button name="action_applications_email" class="oe_stat_button" icon="fa-pencil" type="object" context="{'active_test': False}" attrs="{'invisible': [('application_count', '=', 0)]}">
 							<field name="application_count" widget="statinfo" string="Other Applications"/>
 						</button>
-						<button name="action_makeMeeting" class="oe_stat_button" icon="fa-calendar" type="object" help="Schedule interview with this applicant">
+						<!--<button name="action_makeMeeting" class="oe_stat_button" icon="fa-calendar" type="object" help="Schedule interview with this applicant">
 							<field name="meeting_count" widget="statinfo" string="Meetings"/>
-						</button>
+						</button>-->
 					</div>
 					<widget name="web_ribbon" title="Từ chối" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
 					<!--<field name="kanban_state" widget="kanban_state_selection"/>-->

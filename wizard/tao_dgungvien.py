@@ -34,7 +34,7 @@ class TaoDGUngvien(models.TransientModel):
 
     tg_thuviec = fields.Integer(string='TG thử việc', default=60)
 
-    tgthuviec_id = fields.Many2one('hr.tgthuviec', string='Thời gian thử việc', required=True, tracking=True)
+    tgthuviec_id = fields.Many2one('hr.tgthuviec', string='Thời gian thử việc', required=True)
 
     thuviec_tu = fields.Date('Thử việc từ ngày')
     thuviec_den = fields.Date('Thử việc đến ngày', compute='_compute_thuviecden', store=True, readonly=True)

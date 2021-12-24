@@ -6,8 +6,8 @@
 		<field name="model">hr.job</field>
 		<field name="priority">30</field>
 		<field name="inherit_id" ref="hr_recruitment.view_hr_job_kanban"/>
-		<field name="arch" type="xml">			
-			<div class="container o_kanban_card_content" position="replace">
+		<field name="arch" type="xml">
+			<div class="container o_kanban_card_content mt-0 mt-sm-3" position="replace">
 				<t t-if="record.state.raw_value == 'recruit' or record.no_of_recruitment.raw_value > 0">
 					<div class="row">
 						<t t-if="record.state.raw_value == 'recruit'">
